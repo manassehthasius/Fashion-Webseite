@@ -283,7 +283,7 @@ export const BRAND_TIERS: Record<string, number> = {
   'woolrich': 3, 'schott': 4, 'belstaff': 4, "barbour international": 3, 'lacoste': 3, 'fred perry': 3,
   'tommy hilfiger': 2, 'calvin klein': 2, 'hugo boss': 3, boss: 3, 'massimo dutti': 2, cos: 2, arket: 2,
   'uniqlo': 2, 'zara': 1, 'h&m': 1, mango: 1, 'shein': 1, 'primark': 1, 'asos': 1, 'bershka': 1, 'pull&bear': 1,
-  'gap': 2, 'burocs': 2, 'nike': 3, 'adidas': 3, 'puma': 2, 'reebok': 2, 'converse': 2, 'vans': 2, 'champion': 2,
+  'gap': 2, 'burocs': 2, 'napapijri': 3, 'kappa': 2, 'quiksilver': 2, 'billabong': 2, 'lyle & scott': 3, 'rains': 3, 'farah': 3, 'baum und pferdgarten': 3, 'eytys': 3, 'soulland': 3, 'filling pieces': 3, 'never fully dressed': 2, 'rixo': 3, 'olaf': 3, 'olaf hussein': 3, 'daily paper': 3, 'erlich textil': 3, 'patta': 3, 'mela': 3, "nobody's child": 2, 'silbon': 3, 'polène': 4, 'polene': 4, 'huf': 2, 'jott': 3, 'ripndip': 2, 'jack wolfskin': 3, 'makia': 3, 'karl kani': 2, 'nike': 3, 'adidas': 3, 'puma': 2, 'reebok': 2, 'converse': 2, 'vans': 2, 'champion': 2,
   'oakley': 3, 'columbia': 3, 'helly hansen': 3, 'coogi': 3, 'pringle of scotland': 4, 'pringle': 4,
   'aquascutum': 4, 'daks': 4, 'jaeger': 3, 'austin reed': 3, 'diesel': 2, 'guess': 2, 'esprit': 2,
   'versace': 4, 'moschino': 3, 'dolce & gabbana': 4, 'vivienne westwood': 4, 'kenzo': 3, 'marni': 4,

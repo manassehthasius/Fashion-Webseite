@@ -10,6 +10,8 @@ export interface ExtShop {
   group: ExtGroup;
   mode: 'direct' | 'site';
   url: (q: string) => string;
+  /** Warnhinweis (z. B. umstrittene Qualität) */
+  warn?: string;
   /** Domain für das Shop-Logo (favicon) */
   domain?: string;
   note?: string;
@@ -35,8 +37,8 @@ export const EXT_SHOPS: ExtShop[] = [
   { id: 'tallyweijl', name: 'Tally Weijl', group: 'Fast Fashion', domain: 'www.tally-weijl.com', mode: 'site', url: site('tally-weijl.com') },
   { id: 'jackjones', name: 'Jack & Jones', group: 'Fast Fashion', domain: 'www.jackjones.com', mode: 'site', url: site('jackjones.com') },
   { id: 'only', name: 'ONLY / Vero Moda', group: 'Fast Fashion', domain: 'www.only.com', mode: 'site', url: (q) => `https://www.google.com/search?q=${e(`(site:only.com OR site:veromoda.com) ${q}`)}&hl=de&gl=ch` },
-  { id: 'shein', name: 'SHEIN', group: 'Fast Fashion', domain: 'ch.shein.com', mode: 'direct', url: (q) => `https://ch.shein.com/pdsearch/${e(q)}/` },
-  { id: 'boohoo', name: 'boohoo', group: 'Fast Fashion', domain: 'www.boohoo.com', mode: 'direct', url: (q) => `https://www.boohoo.com/search?q=${e(q)}` },
+  { id: 'shein', warn: 'Qualität/Schadstoffe umstritten', name: 'SHEIN', group: 'Fast Fashion', domain: 'ch.shein.com', mode: 'direct', url: (q) => `https://ch.shein.com/pdsearch/${e(q)}/` },
+  { id: 'boohoo', warn: 'Qualität umstritten', name: 'boohoo', group: 'Fast Fashion', domain: 'www.boohoo.com', mode: 'direct', url: (q) => `https://www.boohoo.com/search?q=${e(q)}` },
   // Online-Händler
   { id: 'zalando', name: 'Zalando', group: 'Online-Händler', domain: 'www.zalando.ch', mode: 'direct', url: (q) => `https://www.zalando.ch/katalog/?q=${e(q)}`, note: 'Gratisversand & -retouren in der Schweiz' },
   { id: 'aboutyou', name: 'About You', group: 'Online-Händler', domain: 'www.aboutyou.ch', mode: 'direct', url: (q) => `https://www.aboutyou.ch/suche?term=${e(q)}` },

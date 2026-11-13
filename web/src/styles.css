@@ -358,3 +358,5 @@ select.input { appearance: none; background-image: linear-gradient(45deg, transp
 .tile-q { font-size: 12.5px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tile-sub { font-size: 11.5px; color: var(--ink-3); }
 .tile-go { margin-top: 6px; font-size: 12.5px; font-weight: 650; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+
+.tile-warn { font-size: 11.5px; color: var(--warn); font-weight: 600; }

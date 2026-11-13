@@ -75,6 +75,15 @@ function ProductDetail({ p }: { p: Item }) {
             bei <b>{shop.name}</b> · {shop.country} · Lieferung {days(cost.days)}
             {shop.health && !shop.health.ok && <span className="tag warn" style={{ marginLeft: 6 }}>Daten evtl. veraltet</span>}
           </div>
+          {shop.trust && (
+            <div className="small" style={{ marginTop: 6 }}>
+              {shop.trust.level === 'verified' ? (
+                <span className="tag good" title={shop.trust.basis}>✓ Geprüfter Shop · {shop.trust.basis}</span>
+              ) : (
+                <span className="tag warn" title={shop.trust.basis}>⚠ {shop.trust.note ?? 'Gemischte Bewertungen'} ({shop.trust.basis})</span>
+              )}
+            </div>
+          )}
         </div>
 
         <div>

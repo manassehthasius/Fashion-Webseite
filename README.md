@@ -10,8 +10,8 @@ Kostenlose, werbefreie Web-App, die hochwertige Kleidung zum **besten Gesamtprei
 
 | Bereich | Was es kann |
 |---|---|
-| **Neue Kleidung** | ~35’000 Produkte von 55 Qualitäts- und Multibrand-Shops mit Lieferung in die Schweiz (z. B. NIKIN, QWSTION, ROTAUF, Muntagnard, Sunspel, Drake's, Norse Projects, Merz b. Schwanen, Colorful Standard, Private White V.C., Taylor Stitch, Tricker's, Asphaltgold, AFEW, Overkill, Footdistrict). Echte CHF-Preise, wo der Shop einen Schweizer Markt hat. |
-| **Secondhand & Vintage** | ~8’000 Teile von REAWAKE (Zürich), HEWI, Labellov und Thrifted, mit Zustand. Dazu Direktsuche auf Ricardo, tutti.ch, Vestiaire Collective, eBay.ch, Grailed (und Vinted, das nicht in die Schweiz liefert). |
+| **Neue Kleidung** | ~47’000 Produkte von 87 Qualitäts-, Marken- und Multibrand-Shops (darunter Napapijri, Belstaff, Lyle & Scott, Rains, Stüssy, Jack Wolfskin, Filling Pieces) mit Lieferung in die Schweiz (z. B. NIKIN, QWSTION, ROTAUF, Muntagnard, Sunspel, Drake's, Norse Projects, Merz b. Schwanen, Colorful Standard, Private White V.C., Taylor Stitch, Tricker's, Asphaltgold, AFEW, Overkill, Footdistrict). Echte CHF-Preise, wo der Shop einen Schweizer Markt hat. |
+| **Secondhand & Vintage** | ~11’000 Teile von REAWAKE (Zürich), Labellov, Thrifted, Rokit, Vintage Folk und PICKNWEIGHT, mit Zustand. Dazu Direktsuche auf Ricardo, tutti.ch, Vestiaire Collective, eBay.ch, Grailed (und Vinted, das nicht in die Schweiz liefert). |
 | **Gesamtpreis** | Artikel + Versand (inkl. Gratisversand-Schwelle) + 8,1 % Einfuhr-MWST + Post-Verzollungsgebühr. Zoll auf Kleidung ist seit 1.1.2024 abgeschafft. Warenkorb-Rechner pro Shop. |
 | **Qualitätsscore 0–100** | Material, Verarbeitung, Markenruf, Herkunft/Zertifikate, Langlebigkeit bzw. Zustand. Jede Komponente ist als Daten, kuratiert oder Schätzung gekennzeichnet. |
 | **Intelligente Suche** | versteht z. B. „breite schwarze Anzughosen“, „schwarzer Merino Pullover Herren unter 150 Grösse M“ oder „converser chuck low“ (Tippfehler werden korrigiert), ohne KI-Kosten. Mode-Begriffe (weit/schmal, Low/High, Rollkragen, Anzughose …) und deutsche Komposita (Wollmantel, Leinenhemd) werden verstanden. Filter für Marke, Stil, Grösse, Material, Farbe, Qualität, Preis, Versand, Zoll, Lieferzeit, Zustand. |
@@ -80,6 +80,10 @@ GitHub Actions führt die Engine alle 30 Minuten aus und veröffentlicht die Sei
 **Gut zu wissen:**
 - GitHub startet geplante Läufe teils mit einigen Minuten Verzögerung.
 - Bei 60 Tagen ohne Aktivität deaktiviert GitHub geplante Workflows. Die automatischen Pushes auf `data` halten das Repo aktiv. Falls doch, reaktivierst du ihn unter *Actions* mit einem Klick.
+
+## Seriosität der Shops
+
+Alle Shops wurden geprüft (11/2026): Rückgabe-, Datenschutz- und AGB-Seiten, Kontakt- und Firmenangaben, bei Händlern und Secondhand-Shops zusätzlich Kundenbewertungen (Trustpilot u. a.). Entfernt: HEWI (Trustpilot 2.2/5, Beschwerden zu Echtheit und Lieferung) und Baghunter (keine überprüfbaren Bewertungen). Goodhood und Overkill haben gemischte Bewertungen – sie sind in der App gekennzeichnet und werden leicht tiefer sortiert. SHEIN und boohoo (nur Direktsuche) tragen den Hinweis „Qualität umstritten“.
 
 ## Transparenz: Quellen und Grenzen
 

@@ -17,7 +17,7 @@ export function ExtShopLinks({ query, title = 'Bei deinen Lieblingsshops suchen'
         <span className="label">{title}</span>
         <a className="tiny faint" href={href('/profil')} style={{ textDecoration: 'underline' }}>Shops wählen</a>
       </div>
-      <ShopTiles query={q} tiles={(all ? EXT_SHOPS : fav).map((x) => ({ id: x.id, name: x.name, url: x.url(q), domain: x.domain, sub: all ? x.group : undefined }))} />
+      <ShopTiles query={q} tiles={(all ? EXT_SHOPS : fav).map((x) => ({ id: x.id, name: x.name, url: x.url(q), domain: x.domain, sub: all ? x.group : undefined, warn: x.warn }))} />
       <div>
         <button className="btn sm" onClick={() => setAll((x) => !x)}>{all ? 'Nur Lieblingsshops' : `Alle ${EXT_SHOPS.length} Shops zeigen`}</button>
       </div>

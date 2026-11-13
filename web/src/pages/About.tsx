@@ -19,17 +19,19 @@ export function About() {
           <p className="small muted">
             Echte Produktdaten aus den öffentlichen Storefront-Feeds kuratierter Shops (Shopify <code>/products.json</code>). Die Lieferung in die Schweiz wird bei jedem Lauf über die offiziellen Lieferländer des Shops (<code>/meta.json</code>) geprüft, robots.txt wird respektiert, pro Shop höchstens ein Abruf alle 30 Minuten mit Pausen zwischen den Seiten. Wo ein Shop einen Schweizer Markt hat, nutzt Stilkompass dessen echte CHF-Preise. Sonst wird mit dem Tageskurs umgerechnet (Wechselkurse aus dem öffentlichen Shopify-Kursfeed, Fallback: manuell gepflegte Kurse).
           </p>
+          <p className="small muted"><b>Seriositätsprüfung (11/2026):</b> Jeder Shop hat Rückgabe-, Datenschutz- und AGB-Seiten sowie Kontakt- oder Firmenangaben. Händler und Secondhand-Shops wurden zusätzlich anhand von Kundenbewertungen geprüft. Entfernt wurden HEWI (Trustpilot 2.2/5, Beschwerden zu Echtheit und Lieferung) und Baghunter (keine überprüfbaren Bewertungen). Goodhood und Overkill haben gemischte Bewertungen und sind gekennzeichnet.</p>
           <p className="small muted">Ricardo, tutti.ch, Vinted, Vestiaire Collective, Grailed und eBay bieten keine kostenlose, frei nutzbare Such-API. Scraping wäre ein Verstoss gegen ihre Nutzungsbedingungen. Stilkompass öffnet deshalb deren eigene Suche mit deinen Suchbegriffen (Direktlinks).</p>
           <div className="table-wrap" style={{ marginTop: 12 }}>
             <table className="compare-table">
               <thead>
-                <tr><th>Shop</th><th>Typ</th><th>Produkte</th><th>Preise</th><th>Versand CH</th><th>Status</th></tr>
+                <tr><th>Shop</th><th>Typ</th><th>Vertrauen</th><th>Produkte</th><th>Preise</th><th>Versand CH</th><th>Status</th></tr>
               </thead>
               <tbody>
                 {shops.map((s) => (
                   <tr key={s.id}>
                     <td><a href={`https://${s.domain}`} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600 }}>{s.name}</a> <span className="faint tiny">{s.country}</span></td>
                     <td className="small">{s.segment === 'secondhand' ? 'Secondhand' : 'Neu'}</td>
+                    <td className="small">{s.trust ? <span style={{ color: s.trust.level === 'verified' ? 'var(--good)' : 'var(--warn)' }} title={s.trust.note}>{s.trust.level === 'verified' ? '✓ ' : '⚠ '}{s.trust.basis}</span> : '–'}</td>
                     <td className="num small">{s.health?.products ?? '–'}</td>
                     <td className="small">{s.market ? `CHF (CH-Markt, ${s.market.mode === 'ddp' ? 'inkl. MWST' : 'zzgl. Import'})` : s.currency === 'CHF' ? 'CHF' : `${s.currency} → CHF, ${s.duty === 'ddp' ? 'DDP' : s.duty === 'dap' ? 'zzgl. Import' : ''}`}</td>
                     <td className="small">{s.shipping.cost === 0 ? 'gratis' : `${s.shipping.currency} ${s.shipping.cost}`}{s.shipping.freeFrom ? `, gratis ab ${s.shipping.freeFrom}` : ''} {s.shipping.verified ? '✓' : <span className="faint">(geschätzt)</span>}</td>

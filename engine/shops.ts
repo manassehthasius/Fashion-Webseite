@@ -1,7 +1,7 @@
 // Kuratierte Shops mit öffentlichem Produkt-Feed und Lieferung in die Schweiz.
 // Lieferland CH wird bei jedem Lauf über /meta.json (ships_to_countries) erneut geprüft.
 // verified: true = Schweizer Versandkosten aus den Versandbedingungen des Shops (geprüft 11/2026).
-import type { Shop } from '../shared/types';
+import type { Shop, ShopTrust } from '../shared/types';
 
 type S = Omit<Shop, 'segment' | 'exportVatRemoved'> & { segment?: Shop['segment']; exportVatRemoved?: boolean };
 
@@ -79,25 +79,76 @@ const RAW: S[] = [
   { id: 'stag', name: 'STAG Provisions', domain: 'stagprovisions.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 4, styles: ['workwear', 'classic'], gender: 'men', multiBrand: true, shipping: est('USD', 30, undefined, [5, 10]), cap: 1500 },
   { id: 'kith', name: 'Kith', domain: 'kith.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 3, styles: ['streetwear', 'casual'], multiBrand: true, shipping: est('USD', 30, undefined, [5, 10]), cap: 1000 },
 
+  // ---------- Marken-Webshops (auch bei Zalando erhältlich) ----------
+  { id: 'napapijri', name: 'Napapijri', domain: 'napapijri.com', country: 'CH', currency: 'EUR', duty: 'dap', homeVat: VAT.CH, tier: 3, styles: ['outdoor', 'casual'], shipping: est('EUR', 10, 100, [2, 5]), exportVatRemoved: false },
+  { id: 'belstaff', name: 'Belstaff', domain: 'belstaff.com', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 4, styles: ['classic', 'outdoor'], shipping: est('GBP', 15, 250, [3, 6]) },
+  { id: 'lyleandscott', name: 'Lyle & Scott', domain: 'lyleandscott.com', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 3, styles: ['preppy', 'casual'], gender: 'men', shipping: est('GBP', 15, 150, [3, 7]) },
+  { id: 'farah', name: 'Farah', domain: 'farah.co.uk', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 3, styles: ['classic', 'casual'], gender: 'men', shipping: est('GBP', 15, 150, [3, 7]) },
+  { id: 'rains', name: 'Rains', domain: 'rains.com', country: 'DK', currency: 'EUR', duty: 'dap', homeVat: VAT.DK, tier: 3, styles: ['minimal', 'outdoor'], shipping: est('EUR', 10, 100, [2, 5]) },
+  { id: 'baumundpferdgarten', name: 'Baum und Pferdgarten', domain: 'baumundpferdgarten.com', country: 'DK', currency: 'EUR', duty: 'dap', homeVat: VAT.DK, tier: 3, styles: ['elegant', 'boho'], gender: 'women', shipping: est('EUR', 15, 200, [3, 6]) },
+  { id: 'eytys', name: 'Eytys', domain: 'eytys.com', country: 'SE', currency: 'SEK', duty: 'dap', homeVat: VAT.SE, tier: 3, styles: ['streetwear', 'minimal'], shipping: est('EUR', 15, 200, [3, 6]) },
+  { id: 'soulland', name: 'Soulland', domain: 'soulland.com', country: 'DK', currency: 'EUR', duty: 'dap', homeVat: VAT.DK, tier: 3, styles: ['streetwear', 'casual'], shipping: est('EUR', 15, 200, [3, 6]) },
+  { id: 'fillingpieces', name: 'Filling Pieces', domain: 'fillingpieces.com', country: 'NL', currency: 'EUR', duty: 'dap', homeVat: VAT.NL, tier: 3, styles: ['streetwear', 'minimal'], shipping: est('EUR', 15, 200, [3, 6]) },
+  { id: 'dailypaper', name: 'Daily Paper', domain: 'dailypaperclothing.com', country: 'NL', currency: 'EUR', duty: 'dap', homeVat: VAT.NL, tier: 3, styles: ['streetwear'], shipping: est('EUR', 15, 150, [3, 6]) },
+  { id: 'patta', name: 'Patta', domain: 'patta.nl', country: 'NL', currency: 'EUR', duty: 'dap', homeVat: VAT.NL, tier: 3, styles: ['streetwear'], shipping: est('EUR', 15, 150, [3, 6]) },
+  { id: 'olafhussein', name: 'OLAF', domain: 'olafhussein.com', country: 'NL', currency: 'EUR', duty: 'dap', homeVat: VAT.NL, tier: 3, styles: ['streetwear', 'minimal'], shipping: est('EUR', 15, 150, [3, 6]) },
+  { id: 'stussy', name: 'Stüssy', domain: 'eu.stussy.com', country: 'NL', currency: 'EUR', duty: 'dap', homeVat: VAT.NL, tier: 3, styles: ['streetwear', 'casual'], shipping: est('EUR', 15, 150, [3, 6]) },
+  { id: 'erlich', name: 'erlich textil', domain: 'erlich-textil.de', country: 'DE', currency: 'EUR', duty: 'dap', homeVat: VAT.DE, tier: 3, styles: ['minimal'], shipping: est('EUR', 12, 100, [3, 6]), certifications: ['gots'] },
+  { id: 'mela', name: 'MELA', domain: 'melawear.de', country: 'DE', currency: 'EUR', duty: 'dap', homeVat: VAT.DE, tier: 3, styles: ['minimal', 'casual'], shipping: est('EUR', 12, 100, [3, 6]), certifications: ['gots', 'fairtrade'] },
+  { id: 'jackwolfskin', name: 'Jack Wolfskin', domain: 'jackwolfskin.com', country: 'DE', currency: 'EUR', duty: 'dap', homeVat: VAT.DE, tier: 3, styles: ['outdoor'], shipping: est('EUR', 10, 100, [3, 6]) },
+  { id: 'jott', name: 'JOTT', domain: 'jott.com', country: 'FR', currency: 'EUR', duty: 'dap', homeVat: VAT.FR, tier: 3, styles: ['casual', 'outdoor'], shipping: est('EUR', 15, 150, [3, 6]) },
+  { id: 'polene', name: 'Polène', domain: 'polene-paris.com', country: 'FR', currency: 'EUR', duty: 'dap', homeVat: VAT.FR, tier: 4, styles: ['elegant', 'minimal'], gender: 'women', shipping: est('EUR', 15, undefined, [3, 6]) },
+  { id: 'silbon', name: 'Silbon', domain: 'silbonshop.com', country: 'ES', currency: 'EUR', duty: 'dap', homeVat: VAT.ES, tier: 3, styles: ['smart', 'classic'], gender: 'men', shipping: est('EUR', 15, 150, [3, 7]) },
+  { id: 'kappa', name: 'Kappa', domain: 'kappa.com', country: 'IT', currency: 'EUR', duty: 'dap', homeVat: VAT.IT, tier: 2, styles: ['sporty', 'streetwear'], shipping: est('EUR', 15, 100, [3, 7]) },
+  { id: 'makia', name: 'Makia', domain: 'makia.com', country: 'FI', currency: 'EUR', duty: 'dap', homeVat: 0.255, tier: 3, styles: ['workwear', 'casual'], shipping: est('EUR', 15, 150, [3, 7]) },
+  { id: 'rixo', name: 'RIXO', domain: 'rixo.co.uk', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 3, styles: ['elegant', 'boho'], gender: 'women', shipping: est('GBP', 15, 200, [3, 7]) },
+  { id: 'neverfullydressed', name: 'Never Fully Dressed', domain: 'neverfullydressed.co.uk', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 2, styles: ['boho', 'casual'], gender: 'women', shipping: est('GBP', 15, 150, [3, 7]) },
+  { id: 'nobodyschild', name: "Nobody's Child", domain: 'nobodyschild.com', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 2, styles: ['casual', 'boho'], gender: 'women', shipping: est('GBP', 15, 150, [3, 7]) },
+  { id: 'noah', name: 'Noah', domain: 'noahny.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 4, styles: ['preppy', 'streetwear'], shipping: est('USD', 30, undefined, [5, 10]) },
+  { id: 'huf', name: 'HUF', domain: 'hufworldwide.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 2, styles: ['streetwear'], shipping: est('USD', 30, undefined, [5, 10]) },
+  { id: 'ripndip', name: 'RIPNDIP', domain: 'ripndip.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 2, styles: ['streetwear'], shipping: est('USD', 30, undefined, [5, 10]) },
+  { id: 'karlkani', name: 'Karl Kani', domain: 'karlkani.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 2, styles: ['streetwear'], shipping: est('USD', 30, undefined, [5, 10]) },
+  { id: 'quiksilver', name: 'Quiksilver', domain: 'quiksilver.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 2, styles: ['casual', 'sporty'], shipping: est('USD', 30, undefined, [5, 10]) },
+  { id: 'billabong', name: 'Billabong', domain: 'billabong.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 2, styles: ['casual', 'sporty'], shipping: est('USD', 30, undefined, [5, 10]) },
+
   // ---------- Secondhand & Vintage ----------
   { id: 'reawake', name: 'REAWAKE', domain: 'reawake.ch', country: 'CH', currency: 'CHF', duty: 'domestic', homeVat: VAT.CH, segment: 'secondhand', tier: 4, styles: ['elegant', 'classic'], multiBrand: true, shipping: ver('CHF', 11, 300, [2, 4], 'Gratis ab CHF 300'), cap: 2500, note: 'Kuratierte High-End-Secondhand, Zürich' },
   { id: 'thrifted', name: 'Thrifted', domain: 'thrifted.com', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, segment: 'secondhand', tier: 2, styles: ['vintage', 'casual'], multiBrand: true, shipping: est('GBP', 15, undefined, [4, 8]), cap: 2000, note: 'Vintage aus UK' },
   { id: 'rokit', name: 'Rokit', domain: 'rokit.co.uk', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, segment: 'secondhand', tier: 2, styles: ['vintage', 'casual'], multiBrand: true, shipping: est('GBP', 15, undefined, [4, 8], 'Internationaler Versand (Weltweit-Zone)'), cap: 2000, note: 'Vintage aus London' },
   { id: 'vintagefolk', name: 'Vintage Folk', domain: 'vintage-folk.com', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, segment: 'secondhand', tier: 2, styles: ['vintage', 'casual'], multiBrand: true, shipping: est('GBP', 15, undefined, [4, 8], 'Versand weltweit, Tarif im Checkout'), cap: 1500, note: 'Vintage aus UK' },
   { id: 'picknweight', name: 'PICKNWEIGHT', domain: 'picknweight.com', country: 'DE', currency: 'EUR', duty: 'dap', homeVat: VAT.DE, segment: 'secondhand', tier: 2, styles: ['vintage', 'casual'], multiBrand: true, shipping: est('EUR', 15, undefined, [3, 7]), cap: 1500, note: 'Vintage aus Deutschland' },
-  { id: 'baghunter', name: 'Baghunter', domain: 'baghunter.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, segment: 'secondhand', tier: 4, styles: ['elegant', 'classic'], multiBrand: true, shipping: est('USD', 40, undefined, [5, 10], 'Versicherter Versand'), cap: 800, note: 'Designer-Taschen Secondhand mit Echtheitsprüfung' },
-  { id: 'hewi', name: 'HEWI', domain: 'hardlyeverwornit.com', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, segment: 'secondhand', tier: 4, styles: ['elegant', 'classic'], multiBrand: true, shipping: est('GBP', 20, undefined, [4, 8], 'Versicherter Versand'), cap: 2000, note: 'Designer-Secondhand (oft Neu mit Etikett)' },
   { id: 'labellov', name: 'Labellov', domain: 'labellov.com', country: 'BE', currency: 'EUR', duty: 'dap', homeVat: VAT.BE, segment: 'secondhand', tier: 4, styles: ['elegant', 'classic'], multiBrand: true, shipping: est('EUR', 25, undefined, [3, 7], 'Versicherter Versand'), cap: 1500, note: 'Luxus-Secondhand mit Echtheitsprüfung' },
 ];
 
+// Seriositätsprüfung 11/2026: alle Shops haben Rückgabe-, Datenschutz- und AGB-Seiten sowie Kontakt-/Firmenangaben.
+// Händler und Secondhand-Shops zusätzlich über Kundenbewertungen geprüft. Entfernt: HEWI (Trustpilot 2.2/5,
+// Echtheits- und Lieferbeschwerden), Baghunter (keine überprüfbaren Bewertungen, Luxus-Secondhand).
+const TRUST: Record<string, ShopTrust> = {
+  footdistrict: { level: 'verified', basis: 'Trustpilot 4.6/5 (ca. 7’800 Bewertungen)' },
+  labellov: { level: 'verified', basis: 'Trustpilot 4.6/5 (ca. 990 Bewertungen), Echtheitsgarantie' },
+  vintagefolk: { level: 'verified', basis: 'Trustpilot 4.5/5, reviews.io 4.9/5' },
+  thrifted: { level: 'verified', basis: 'Trustpilot 4.0/5 (ca. 410 Bewertungen)' },
+  picknweight: { level: 'verified', basis: 'Etablierte Vintage-Kette mit Läden in Berlin, Hamburg, Köln, München, London' },
+  rokit: { level: 'verified', basis: 'Vintage-Händler mit Läden in London seit 1986' },
+  reawake: { level: 'verified', basis: 'Secondhand-Boutique in Zürich mit Ladengeschäft' },
+  thenextdoor: { level: 'verified', basis: 'Concept Store in Paris (10 rue Beaurepaire)' },
+  afew: { level: 'verified', basis: 'Sneaker-Store in Düsseldorf mit Ladengeschäft' },
+  asphaltgold: { level: 'verified', basis: 'Sneaker-Store in Darmstadt mit Ladengeschäft' },
+  kith: { level: 'verified', basis: 'Etablierter Händler mit Läden in New York, Paris, London' },
+  stag: { level: 'verified', basis: 'Menswear-Händler in Austin mit Ladengeschäft' },
+  goodhood: { level: 'mixed', basis: 'Trustpilot 3.2–3.5/5 (ca. 400 Bewertungen)', note: 'Gemischte Bewertungen: Beschwerden über verzögerte Rückerstattungen und Kundenservice.' },
+  overkill: { level: 'mixed', basis: 'Trustpilot 3.0/5 (178 Bewertungen)', note: 'Gemischte Bewertungen: Ware echt, teils Transportschäden gemeldet.' },
+};
+
 export const SHOPS: Shop[] = RAW.map((s) => ({
   ...s,
+  trust: TRUST[s.id] ?? { level: 'verified', basis: s.multiBrand ? 'Etablierter Fachhändler' : 'Offizieller Marken-Shop' },
   segment: s.segment ?? 'new',
   // Annahme: EU/UK-Shops ziehen bei Lieferung in die Schweiz ihre MWST ab (Export ist MWST-frei)
   exportVatRemoved: s.exportVatRemoved ?? (s.duty === 'dap' && s.homeVat > 0),
-  cap: s.cap ?? 800,
+  cap: s.cap ?? 600,
   // Neueste Produkte zuerst: so viele Feed-Seiten, wie für das Katalog-Limit nötig (+1 Reserve für Nicht-Kleidung)
-  maxPages: s.maxPages ?? Math.ceil((s.cap ?? 800) / 250) + 1,
+  maxPages: s.maxPages ?? Math.ceil((s.cap ?? 600) / 250) + 1,
 }));
 
 export const SHOP_BY_ID = Object.fromEntries(SHOPS.map((s) => [s.id, s]));

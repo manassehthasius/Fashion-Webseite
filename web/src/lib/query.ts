@@ -102,7 +102,7 @@ export function runQuery(input: QueryInput): QueryResult {
       case 'new': score = p.first; break;
       case 'drop': score = (p.drop ?? 0) * 10 + (p.chfWas ? (1 - p.chf / p.chfWas) * 100 : 0); break;
       default:
-        score = rankValue(p, p.v, match, profile?.priority ?? 'balanced') + (hasText ? textScore(p.h, p.t, p.b, pq.text, pq.soft) * 3 : 0);
+        score = rankValue(p, p.v, match, profile?.priority ?? 'balanced') + (hasText ? textScore(p.h, p.t, p.b, pq.text, pq.soft) * 3 : 0) - (shop?.trust?.level === 'mixed' ? 4 : 0);
     }
     out.push({ p, score });
     count(fCat, p.cat);

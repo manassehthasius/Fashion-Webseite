@@ -9,6 +9,7 @@ export interface Tile {
   url: string;
   domain?: string;
   sub?: string; // z. B. Gruppe oder Hinweis
+  warn?: string; // Warnhinweis
   muted?: boolean;
 }
 
@@ -29,6 +30,7 @@ export function ShopTiles({ tiles, query }: { tiles: Tile[]; query: string }) {
           <div className="tile-body">
             <span className="tile-q">„{query}“</span>
             {t.sub && <span className="tile-sub">{t.sub}</span>}
+            {t.warn && <span className="tile-warn">⚠ {t.warn}</span>}
             <span className="tile-go">
               Ergebnisse ansehen <Icon name="external" size={12} />
             </span>
