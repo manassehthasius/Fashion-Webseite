@@ -9,8 +9,15 @@ import { Icon } from '../components/Icon';
 export function Settings() {
   const sync = useSyncStatus();
   const user = useUser();
-  const [cfg, setCfg] = useState<SyncConfig>(loadSyncConfig());
+  // Auf GitHub Pages Repo automatisch erkennen (benutzer.github.io/repo)
+  const detected = location.hostname.endsWith('.github.io') ? { owner: location.hostname.split('.')[0], repo: location.pathname.split('/').filter(Boolean)[0] ?? '' } : null;
+  const [cfg, setCfg] = useState<SyncConfig>(() => {
+    const c = loadSyncConfig();
+    if (detected && !c.github?.owner) return { ...c, mode: c.mode === 'off' ? 'off' : 'github', github: { owner: detected.owner, repo: detected.repo, token: '', passphrase: '', branch: 'userstate' } };
+    return c;
+  });
   const gh = cfg.github ?? { owner: '', repo: '', token: '', passphrase: '', branch: 'userstate' };
+  const tokenUrl = `https://github.com/settings/personal-access-tokens/new?name=${encodeURIComponent('Stilkompass Sync')}&description=${encodeURIComponent('Verschlüsselte Watchlist für Push-Alarme')}&target_name=${encodeURIComponent(gh.owner)}&expires_in=none&contents=write&actions=write`;
   const fileRef = useRef<HTMLInputElement>(null);
   const [theme, setTheme] = useState(localStorage.getItem('stilkompass:theme') ?? 'auto');
 
@@ -60,6 +67,15 @@ export function Settings() {
               <button key={m} className={cfg.mode === m ? 'on' : ''} onClick={() => setCfg({ ...cfg, mode: m })}>{m === 'auto' ? 'Automatisch (lokal)' : m === 'github' ? 'GitHub' : 'Aus'}</button>
             ))}
           </div>
+          {cfg.mode === 'github' && (
+            <ol className="small muted" style={{ margin: 0, paddingLeft: 18 }}>
+              <li>
+                <a href={tokenUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', fontWeight: 600 }}>Token auf GitHub erstellen</a> → bei <i>Repository access</i> „Only select repositories“ → <b>{gh.repo || 'dein Repo'}</b> wählen → Berechtigung <i>Contents: Read and write</i> (optional <i>Actions: Read and write</i>) → <i>Generate token</i> → Token kopieren.
+              </li>
+              <li>Token unten einfügen, dazu die Passphrase = Wert von <code>STATE_PASSPHRASE</code> aus deiner Secrets-Datei.</li>
+              <li>„Speichern & verbinden“, danach unter <a href={href('/alarme')} style={{ textDecoration: 'underline' }}>Alarme</a> Push einschalten.</li>
+            </ol>
+          )}
           {cfg.mode === 'github' && (
             <div className="form-grid">
               <div className="field"><label>GitHub-Benutzer/Organisation</label><input className="input" value={gh.owner} onChange={(e) => setCfg({ ...cfg, github: { ...gh, owner: e.target.value.trim() } })} placeholder="dein-name" /></div>
