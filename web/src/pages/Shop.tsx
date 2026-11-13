@@ -10,6 +10,7 @@ import { recordSearch, saveSearch, useUser } from '../lib/store';
 import { Filters } from '../components/Filters';
 import { ProductCompareBox } from '../components/ProductCompareBox';
 import { ExtShopLinks } from '../components/ExtShopLinks';
+import { ShopTiles } from '../components/ShopTiles';
 import { ProductGrid } from '../components/ProductGrid';
 import { SearchBar } from '../components/SearchBar';
 import { Icon } from '../components/Icon';
@@ -97,13 +98,10 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
             <div className="label">Auch auf Marktplätzen suchen{q ? ` nach „${q}“` : ''}</div>
             <span className="tiny faint">Direktlinks – keine freie API verfügbar</span>
           </div>
-          <div className="chips scroll">
-            {links.filter((l) => l.segment === 'secondhand').map((l) => (
-              <a key={l.id} className="chip" href={l.url} target="_blank" rel="noopener noreferrer" title={l.note} style={l.shipsToCH ? undefined : { opacity: 0.6 }}>
-                {l.name} {!l.shipsToCH && '· kein CH-Versand'} <Icon name="external" size={13} />
-              </a>
-            ))}
-          </div>
+          <ShopTiles
+            query={q || [...(filters.categories ?? []).map((c) => CATEGORY_LABELS[c])].join(' ') || 'Kleidung'}
+            tiles={links.filter((l) => l.segment === 'secondhand').map((l) => ({ id: l.id, name: l.name, url: l.url, domain: l.domain, sub: l.shipsToCH ? 'liefert in die Schweiz' : 'kein CH-Versand', muted: !l.shipsToCH }))}
+          />
         </section>
       )}
 
