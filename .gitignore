@@ -6,3 +6,4 @@ state/
 .cache/
 *.log
 web/public/ort/
+GITHUB-SECRETS.txt
