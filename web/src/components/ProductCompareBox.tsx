@@ -12,6 +12,7 @@ import { chf, days } from '../lib/format';
 import { setParam } from '../lib/router';
 import { useUser } from '../lib/store';
 import { Icon } from './Icon';
+import { ExtShopLinks } from './ExtShopLinks';
 import { QualityPill } from './ui';
 
 interface Cluster {
@@ -57,7 +58,7 @@ export function ProductCompareBox({ items, query }: { items: Item[]; query: stri
   const user = useUser();
   const clusters = useMemo(() => clusterOffers(items).slice(0, 4), [items]);
   const links = platformLinks({ q: query });
-  const external = links.filter((l) => l.segment === 'compare' || ['zalando', 'galaxus', 'ricardo', 'ebay'].includes(l.id));
+  const external = links.filter((l) => l.segment === 'compare');
   const multi = clusters.filter((c) => new Set(c.offers.map((o) => o.s)).size > 1).length;
 
   return (
@@ -104,16 +105,16 @@ export function ProductCompareBox({ items, query }: { items: Item[]; query: stri
         </div>
       ))}
       <div>
-        <div className="label" style={{ marginBottom: 8 }}>In allen anderen Onlineshops vergleichen</div>
+        <div className="label" style={{ marginBottom: 8 }}>Preisvergleich über alle Onlineshops</div>
         <div className="chips">
-          {external.map((l) => (
+          {external.filter((l) => l.segment === 'compare').map((l) => (
             <a key={l.id} className="chip" href={l.url} target="_blank" rel="noopener noreferrer" title={l.note}>
               {l.name} <Icon name="external" size={13} />
             </a>
           ))}
         </div>
-        <div className="tiny faint" style={{ marginTop: 6 }}>Google Shopping und toppreise.ch durchsuchen zusätzlich Shops ohne öffentlichen Feed (z. B. Zalando, Manor, Globus).</div>
       </div>
+      <ExtShopLinks query={query} />
     </section>
   );
 }

@@ -80,7 +80,7 @@ export function About() {
           <ul className="small muted" style={{ paddingLeft: 18, margin: 0 }}>
             <li><b>Ricardo, Vinted, Vestiaire, tutti, Grailed, eBay:</b> keine Produktdaten im Katalog (keine freie API). Daher nur Direktsuche, und für diese Plattformen keine automatischen Alarme. Tipp: Ricardo und Vinted bieten eigene, kostenlose Suchabos.</li>
             <li><b>Vinted</b> liefert nicht in die Schweiz (Stand 11/2026).</li>
-            <li>Shops ohne öffentlichen Feed (z. B. Zalando, COS, Arket, Uniqlo) sind nicht im Katalog, nur als Direktlinks.</li>
+            <li><b>Zalando, Zara, H&M, Bershka, Pull&Bear, Mango, About You, ASOS, Manor & Co.</b> (über 35 Shops): Sie verbieten automatisches Auslesen und bieten keinen offenen Feed. Deshalb öffnet Stilkompass bei jeder Suche mit einem Klick ihre eigene Suche (oder eine Google-Suche nur auf diesem Shop). Preise, Qualitätsscore und Alarme gibt es dort nicht automatisch – für einen Preisvergleich über alle Shops hilft Google Shopping.</li>
             <li>Versandkosten sind bei manchen Shops geschätzt (gekennzeichnet). Grössenangaben folgen dem jeweiligen Shop (EU/UK/US gemischt).</li>
             <li>Aktualisierung „alle 30 Minuten“: GitHub Actions startet geplante Läufe teils mit einigen Minuten Verzögerung.</li>
             <li>Web-Push auf dem iPhone funktioniert nur, wenn Stilkompass zum Home-Bildschirm hinzugefügt wurde (iOS 16.4+).</li>

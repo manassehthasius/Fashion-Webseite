@@ -11,6 +11,7 @@ import { href, setParam } from '../lib/router';
 import { getWatch, recordClick, recordView, removeWatch, toggleCompare, toggleFavorite, upsertWatch, useCompare, useUser } from '../lib/store';
 import { Icon } from './Icon';
 import { PriceChart } from './PriceChart';
+import { ExtShopLinks } from './ExtShopLinks';
 import { Panel, QualityRing, Switch, toast } from './ui';
 import { imageSimFor } from '../lib/clipIndex';
 
@@ -216,6 +217,12 @@ function ProductDetail({ p }: { p: Item }) {
             <MiniList items={similar.map((x) => x.p)} base={p} />
           </section>
         )}
+        <section>
+          <ExtShopLinks
+            title="Ähnliches bei deinen Lieblingsshops"
+            query={[p.col[0] ? COLOR_BY_KEY[p.col[0]]?.label : '', CATEGORY_LABELS[p.cat], p.g === 'men' ? 'Herren' : p.g === 'women' ? 'Damen' : ''].filter(Boolean).join(' ')}
+          />
+        </section>
         {details?.[1] && (
           <section>
             <div className="label" style={{ marginBottom: 6 }}>Beschreibung des Shops</div>

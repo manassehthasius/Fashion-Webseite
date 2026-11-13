@@ -9,6 +9,7 @@ import { setParams, useRoute } from '../lib/router';
 import { recordSearch, saveSearch, useUser } from '../lib/store';
 import { Filters } from '../components/Filters';
 import { ProductCompareBox } from '../components/ProductCompareBox';
+import { ExtShopLinks } from '../components/ExtShopLinks';
 import { ProductGrid } from '../components/ProductGrid';
 import { SearchBar } from '../components/SearchBar';
 import { Icon } from '../components/Icon';
@@ -137,6 +138,11 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
             </div>
           )}
           {result && q && result.specific && <ProductCompareBox items={result.items} query={correctedQuery(q, result.parsed.corrected)} />}
+          {result && q && !result.specific && (
+            <div className="panel" style={{ marginBottom: 20 }}>
+              <ExtShopLinks query={correctedQuery(q, result.parsed.corrected)} title="Auch bei deinen Lieblingsshops suchen" />
+            </div>
+          )}
           {chips.length > 0 && (
             <div className="chips" style={{ marginBottom: 18 }}>
               {chips.map((c) => (
@@ -157,16 +163,9 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
           )}
           {result && result.items.length > 0 && <ProductGrid items={result.items} profile={personalize ? user.profile : undefined} resetKey={`${q}|${sort}|${paramKey}`} />}
 
-          {segment !== 'secondhand' && result && (
+          {result && !q && (
             <section className="section">
-              <div className="label" style={{ marginBottom: 10 }}>Weitere Anbieter (Direktsuche)</div>
-              <div className="chips">
-                {links.filter((l) => l.segment === 'new').map((l) => (
-                  <a key={l.id} className="chip" href={l.url} target="_blank" rel="noopener noreferrer" title={l.note}>
-                    {l.name} <Icon name="external" size={13} />
-                  </a>
-                ))}
-              </div>
+              <ExtShopLinks query={extQuery(filters)} title="Diese Auswahl auch bei deinen Lieblingsshops suchen" />
             </section>
           )}
         </div>
@@ -179,6 +178,17 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
       <SaveSearchPanel open={saveOpen} onClose={() => setSaveOpen(false)} q={q} filters={filters} segment={segment} />
     </div>
   );
+}
+
+/** Suchbegriff aus Filtern für externe Shops ("Schwarz Hosen Herren") */
+function extQuery(f: SearchFilters): string {
+  const parts = [
+    ...(f.colors ?? []).slice(0, 1).map((c) => COLOR_BY_KEY[c]?.label ?? c),
+    ...(f.materials ?? []).slice(0, 1).map((m) => MATERIAL_BY_KEY[m]?.label ?? m),
+    ...(f.categories ?? []).slice(0, 1).map((c) => CATEGORY_LABELS[c]),
+    ...(f.genders ?? []).slice(0, 1).map((g) => GENDER_LABEL[g] ?? g),
+  ];
+  return parts.join(' ');
 }
 
 function correctedQuery(q: string, fixes: [string, string][]): string {

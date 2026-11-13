@@ -5,6 +5,7 @@ import { muteInterest, removeImageInterest, resetInterests, setLearning, updateP
 import { topOf, totalSignal, type Dim } from '@shared/interests';
 import { useData } from '../lib/data';
 import { href } from '../lib/router';
+import { DEFAULT_EXT_SHOPS, EXT_GROUPS, EXT_SHOPS } from '@shared/mainstream';
 import { Switch, toast } from '../components/ui';
 import { ago } from '../lib/format';
 
@@ -39,6 +40,26 @@ export function Profile() {
 
       <div className="stack" style={{ gap: 18 }}>
         <LearnedInterests />
+
+        <Section title="Deine Lieblingsshops" hint="erscheinen bei jeder Suche zuerst">
+          <p className="small muted" style={{ marginTop: 0 }}>Shops wie Zalando, Zara oder H&M erlauben kein automatisches Auslesen. Stilkompass öffnet bei jeder Suche mit einem Klick deren eigene Suche mit deinem Suchbegriff.</p>
+          {EXT_GROUPS.map((g) => (
+            <div key={g} style={{ marginBottom: 10 }}>
+              <div className="tiny faint" style={{ marginBottom: 6 }}>{g}</div>
+              <div className="chips">
+                {EXT_SHOPS.filter((x) => x.group === g).map((x) => {
+                  const cur = profile.extShops?.length ? profile.extShops : DEFAULT_EXT_SHOPS;
+                  const on = cur.includes(x.id);
+                  return (
+                    <button key={x.id} className={`chip${on ? ' on' : ''}`} onClick={() => set({ extShops: on ? cur.filter((y) => y !== x.id) : [...cur, x.id] })}>
+                      {x.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </Section>
 
         <Section title="Für wen?">
           <div className="chips">

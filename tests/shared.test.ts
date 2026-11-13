@@ -294,3 +294,16 @@ describe('Lernende Interessen', () => {
     expect(i.cats.knit).toBeGreaterThan(0);
   });
 });
+
+import { EXT_SHOPS, DEFAULT_EXT_SHOPS, EXT_BY_ID } from '../shared/mainstream';
+describe('Lieblingsshops ohne Feed', () => {
+  it('bauen gültige Such-Links mit der Suchanfrage', () => {
+    for (const s of EXT_SHOPS) {
+      const u = new URL(s.url('breite schwarze anzughose'));
+      expect(u.protocol).toBe('https:');
+      expect(decodeURIComponent(u.href.replace(/\+/g, ' '))).toContain('breite schwarze anzughose');
+    }
+    expect(DEFAULT_EXT_SHOPS.every((id) => EXT_BY_ID[id])).toBe(true);
+    expect(EXT_BY_ID.zara.url('hose')).toBe('https://www.zara.com/ch/de/search?searchTerm=hose');
+  });
+});

@@ -226,6 +226,8 @@ export interface StyleProfile {
   budget: Partial<Record<Category | 'default', number>>;
   minQuality: number;
   priority: 'quality' | 'balanced' | 'price';
+  /** Lieblingsshops ohne Feed (Zalando, Zara, H&M …) – erscheinen bei jeder Suche zuerst */
+  extShops?: string[];
 }
 
 export interface UserState {
