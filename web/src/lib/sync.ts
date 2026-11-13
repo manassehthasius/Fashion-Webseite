@@ -53,6 +53,10 @@ export function useSyncStatus(): SyncStatus {
 
 // ---------- Lokaler Server ----------
 async function localAvailable(): Promise<boolean> {
+  // Statisches Hosting (GitHub Pages) hat keinen lokalen Server
+  const h = location.hostname;
+  const local = h === 'localhost' || /^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(h) || h.endsWith('.local') || !!location.port;
+  if (!local) return false;
   try {
     const r = await fetch('./api/health', { cache: 'no-store' });
     if (!r.ok) return false;
