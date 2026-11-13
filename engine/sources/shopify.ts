@@ -20,7 +20,8 @@ export async function fetchMeta(domain: string): Promise<ShopMeta | null> {
   const r = await fetchJson<{ ships_to_countries?: string[]; currency?: string; published_products_count?: number; name?: string }>(`https://${domain}/meta.json`, { retries: 1 });
   if (!r.data) return null;
   return {
-    shipsToCH: (r.data.ships_to_countries ?? []).includes('CH'),
+    // "*" = Versandzone "Restliche Welt" (schliesst die Schweiz ein)
+    shipsToCH: (r.data.ships_to_countries ?? []).some((c) => c === 'CH' || c === '*'),
     currency: r.data.currency ?? '',
     count: r.data.published_products_count ?? 0,
     name: r.data.name ?? domain,
