@@ -37,7 +37,7 @@ type TF = typeof import('@huggingface/transformers');
 
 async function loadTf(): Promise<TF> {
   const tf = await import('@huggingface/transformers');
-  tf.env.cacheDir = path.join(ROOT, '.cache', 'models');
+  tf.env.cacheDir = process.env.STILKOMPASS_MODELS ?? path.join(ROOT, '.cache', 'models');
   tf.env.allowLocalModels = false;
   return tf;
 }
