@@ -1,0 +1,96 @@
+# Stilkompass: alle 30 Minuten Preise/Verfügbarkeit aktualisieren, Alarme senden und die Seite neu veröffentlichen.
+# Kostenlos in öffentlichen Repos (GitHub Actions + GitHub Pages). Einrichtung: siehe README.md → "GitHub (kostenlos hosten)".
+name: Stilkompass aktualisieren
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md']
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stilkompass-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+      VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+      VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}
+      STATE_PASSPHRASE: ${{ secrets.STATE_PASSPHRASE }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      - name: Letzten Datenstand laden (Branch "data")
+        run: |
+          if git fetch --depth=1 origin data 2>/dev/null; then
+            git archive FETCH_HEAD | tar -x -C .
+            echo "Datenstand geladen: $(cat data/meta.json 2>/dev/null | head -c 120)"
+          else
+            echo "Noch kein Datenstand – erster Lauf."
+          fi
+
+      - name: Verschlüsselte Watchlist laden (Branch "userstate")
+        run: |
+          mkdir -p state/user
+          if git fetch --depth=1 origin userstate 2>/dev/null && git show FETCH_HEAD:user/state.enc.json > state/user/remote.enc.json 2>/dev/null; then
+            echo "Nutzerzustand gefunden (verschlüsselt)."
+          else
+            rm -f state/user/remote.enc.json
+            echo "Kein synchronisierter Nutzerzustand – Alarme nur in der App."
+          fi
+
+      - name: KI-Modell-Cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/models
+          key: hf-marqo-fashionsiglip-q8-v1
+
+      - name: Shops abrufen, Preise berechnen, Alarme senden, Bild-Index ergänzen
+        run: npx tsx engine/run.ts --embed=${{ vars.EMBED_BUDGET || '1500' }}
+
+      - name: App bauen
+        run: |
+          if [ -n "$VAPID_PUBLIC_KEY" ]; then echo "{\"publicKey\":\"$VAPID_PUBLIC_KEY\"}" > web/public/push-config.json; fi
+          npm run build
+          cp -r data dist/data
+          touch dist/.nojekyll
+
+      - name: Datenstand sichern (Branch "data", ohne Historie)
+        run: |
+          rm -f state/user/remote.enc.json
+          tmp=$(mktemp -d)
+          cp -r data state "$tmp"/
+          cd "$tmp"
+          git init -q -b data
+          git add -A
+          git -c user.name="stilkompass-bot" -c user.email="actions@users.noreply.github.com" commit -qm "Datenstand $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" data
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deploy
+        uses: actions/deploy-pages@v4
