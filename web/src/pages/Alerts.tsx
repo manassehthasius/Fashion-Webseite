@@ -7,6 +7,7 @@ import { useSyncStatus } from '../lib/sync';
 import { href, setParam } from '../lib/router';
 import { chf, ago } from '../lib/format';
 import { imgUrl } from '@shared/media';
+import { platformLinks } from '@shared/platforms';
 import { Empty, Switch, toast } from '../components/ui';
 import { Icon } from '../components/Icon';
 
@@ -134,6 +135,14 @@ export function Alerts() {
                   <a href={href(path, { q: s.query })} style={{ fontWeight: 600 }}>{s.name}</a>
                   <div className="small muted">
                     {s.segment === 'secondhand' ? 'Secondhand' : s.segment === 'new' ? 'Neu' : 'Alle'} · „{s.query || 'alle'}“ · gespeichert {ago(s.createdAt / 1000)}
+                  </div>
+                  <div className="chips" style={{ marginTop: 8 }}>
+                    <span className="tiny faint">Suchabo auch hier anlegen:</span>
+                    {platformLinks({ q: s.query, maxPrice: s.filters.maxPrice }).filter((l) => ['ricardo', 'tutti', 'vestiaire', 'ebay'].includes(l.id)).map((l) => (
+                      <a key={l.id} className="chip" style={{ height: 28, fontSize: 12 }} href={l.url} target="_blank" rel="noopener noreferrer" title={l.note}>
+                        {l.name} <Icon name="external" size={12} />
+                      </a>
+                    ))}
                   </div>
                   {matches.length > 0 && (
                     <div className="row" style={{ marginTop: 8, gap: 6 }}>
