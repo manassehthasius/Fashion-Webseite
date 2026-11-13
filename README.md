@@ -10,12 +10,14 @@ Kostenlose, werbefreie Web-App, die hochwertige Kleidung zum **besten Gesamtprei
 
 | Bereich | Was es kann |
 |---|---|
-| **Neue Kleidung** | ~29’000 Produkte von 50 Qualitäts-Shops mit Lieferung in die Schweiz (z. B. NIKIN, QWSTION, ROTAUF, Muntagnard, Sunspel, Drake's, Norse Projects, Merz b. Schwanen, Colorful Standard, Private White V.C., Taylor Stitch, Tricker's). Echte CHF-Preise, wo der Shop einen Schweizer Markt hat. |
+| **Neue Kleidung** | ~35’000 Produkte von 55 Qualitäts- und Multibrand-Shops mit Lieferung in die Schweiz (z. B. NIKIN, QWSTION, ROTAUF, Muntagnard, Sunspel, Drake's, Norse Projects, Merz b. Schwanen, Colorful Standard, Private White V.C., Taylor Stitch, Tricker's, Asphaltgold, AFEW, Overkill, Footdistrict). Echte CHF-Preise, wo der Shop einen Schweizer Markt hat. |
 | **Secondhand & Vintage** | ~8’000 Teile von REAWAKE (Zürich), HEWI, Labellov und Thrifted, mit Zustand. Dazu Direktsuche auf Ricardo, tutti.ch, Vestiaire Collective, eBay.ch, Grailed (und Vinted, das nicht in die Schweiz liefert). |
 | **Gesamtpreis** | Artikel + Versand (inkl. Gratisversand-Schwelle) + 8,1 % Einfuhr-MWST + Post-Verzollungsgebühr. Zoll auf Kleidung ist seit 1.1.2024 abgeschafft. Warenkorb-Rechner pro Shop. |
 | **Qualitätsscore 0–100** | Material, Verarbeitung, Markenruf, Herkunft/Zertifikate, Langlebigkeit bzw. Zustand. Jede Komponente ist als Daten, kuratiert oder Schätzung gekennzeichnet. |
-| **Intelligente Suche** | versteht z. B. „schwarzer Merino Pullover Herren unter 150 Grösse M“ ohne KI-Kosten. Filter für Marke, Stil, Grösse, Material, Farbe, Qualität, Preis, Versand, Zoll, Lieferzeit, Zustand. |
+| **Intelligente Suche** | versteht z. B. „breite schwarze Anzughosen“, „schwarzer Merino Pullover Herren unter 150 Grösse M“ oder „converser chuck low“ (Tippfehler werden korrigiert), ohne KI-Kosten. Mode-Begriffe (weit/schmal, Low/High, Rollkragen, Anzughose …) und deutsche Komposita (Wollmantel, Leinenhemd) werden verstanden. Filter für Marke, Stil, Grösse, Material, Farbe, Qualität, Preis, Versand, Zoll, Lieferzeit, Zustand. |
+| **Produkt-Preisvergleich** | Bei einem bestimmten Produkt werden gleiche Modelle aus allen Shops gruppiert, pro Shop der beste Gesamtpreis. Dazu Direktvergleich bei Google Shopping und toppreise.ch für alle übrigen Webseiten. |
 | **KI-Bildsuche** | Foto hochladen → ähnliche Teile. Das Open-Source-Modell Marqo-FashionSigLIP läuft lokal im Browser. Erkennt Kategorie, Farbe und Stil. |
+| **Lernt deinen Stil** | merkt sich (nur im Browser), was du ansiehst, merkst, beobachtest, im Shop öffnest, suchst und als Foto hochlädst. Daraus entstehen „Für dich“-Vorschläge, „Passend zu deinen Bildern“ und „Zuletzt angesehen“. Im Style-Profil sichtbar, einzeln löschbar, pausierbar. |
 | **Outfits** | komplette Looks aus verfügbaren Teilen: Farbharmonie, Stil, Saison, Grösse, Budget |
 | **Preisvergleich** | gleiches Produkt in mehreren Shops, günstigere Alternativen mit ähnlicher Qualität, Vergleichstabelle |
 | **Favoriten & Watchlist** | dauerhaft gespeichert, mit Export/Import. Alarme bei Preissturz, Wunschpreis, wieder verfügbarer Grösse und neuen Treffern gespeicherter Suchen |
