@@ -67,7 +67,8 @@ export function getVocab(): Vocab {
 
 export function runQuery(input: QueryInput): QueryResult {
   const t0 = performance.now();
-  const { items, shopById } = getData();
+  // Hauptkatalog + bereits geladene Teile des Gesamtsortiments
+  const { all: items, shopById } = getData();
   const pq = parseQuery(input.q, input.q.trim() ? getVocab() : undefined);
   const hasText = pq.text.length > 0 || pq.groups.length > 0 || pq.soft.length > 0;
   // Explizite Filter haben Vorrang vor erkannten Begriffen

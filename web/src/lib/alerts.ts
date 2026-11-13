@@ -1,9 +1,9 @@
 // In-App-Alarme: vergleicht Watchlist & gespeicherte Suchen mit dem aktuellen Katalog (läuft im Browser).
 // Hintergrund-Benachrichtigungen bei geschlossener Seite übernimmt die Engine (siehe engine/alerts.ts).
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import type { SavedSearch, WatchItem } from '@shared/types';
 import { matchesSearch } from '@shared/search';
-import { useData, type Item } from './data';
+import { ensureDeepFor, useData, type Item } from './data';
 import { useUser } from './store';
 
 export interface TriggeredWatch {
@@ -32,6 +32,9 @@ export function newMatchesFor(s: SavedSearch, items: Item[], shopById: Record<st
 export function useWatchStatus(): TriggeredWatch[] {
   const user = useUser();
   const data = useData();
+  useEffect(() => {
+    if (data.status === 'ready') ensureDeepFor(user.watch.map((w) => w.id));
+  }, [data.status, user.watch]);
   return useMemo(() => user.watch.map((w) => evaluateWatch(w, data.byId.get(w.id))), [user.watch, data.byId]);
 }
 

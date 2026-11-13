@@ -223,6 +223,9 @@ textarea.input { height: auto; padding: 10px 12px; }
 select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--ink-3) 50%), linear-gradient(135deg, var(--ink-3) 50%, transparent 50%); background-position: calc(100% - 17px) 17px, calc(100% - 12px) 17px; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 30px; }
 .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
 .toolbar .count { font-size: 13.5px; color: var(--ink-2); }
+.deep-status { color: var(--ink-3); }
+.spinner.sm { width: 12px; height: 12px; border-width: 2px; display: inline-block; vertical-align: -1px; margin-right: 4px; }
+.tag.auto { background: var(--accent-soft, rgba(80,120,200,.12)); color: var(--ink-2); }
 .toolbar .spacer { flex: 1; }
 .seg { display: inline-flex; background: var(--surface-2); border-radius: 999px; padding: 3px; gap: 2px; }
 .seg button { height: 32px; padding: 0 14px; border-radius: 999px; font-size: 13.5px; color: var(--ink-2); font-weight: 550; }

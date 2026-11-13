@@ -1,10 +1,16 @@
-import { useData } from '../lib/data';
+import { useEffect } from 'react';
+import { loadDeepIndex, useData } from '../lib/data';
 import { chf, ago } from '../lib/format';
 import { CH_IMPORT } from '@shared/pricing';
 
 export function About() {
   const data = useData();
-  const shops = [...data.shops].sort((a, b) => a.segment.localeCompare(b.segment) || a.name.localeCompare(b.name));
+  useEffect(() => {
+    void loadDeepIndex();
+  }, []);
+  const deep = data.deep.index;
+  const shops = [...data.shops].sort((a, b) => a.segment.localeCompare(b.segment) || Number(!!a.discovered) - Number(!!b.discovered) || a.name.localeCompare(b.name));
+  const found = data.shops.filter((s) => s.discovered).sort((a, b) => (b.discovered!.at > a.discovered!.at ? 1 : -1));
   return (
     <div className="container" style={{ maxWidth: 980 }}>
       <div className="page-head">
@@ -19,6 +25,25 @@ export function About() {
           <p className="small muted">
             Echte Produktdaten aus den öffentlichen Storefront-Feeds kuratierter Shops (Shopify <code>/products.json</code>). Die Lieferung in die Schweiz wird bei jedem Lauf über die offiziellen Lieferländer des Shops (<code>/meta.json</code>) geprüft, robots.txt wird respektiert, pro Shop höchstens ein Abruf alle 30 Minuten mit Pausen zwischen den Seiten. Wo ein Shop einen Schweizer Markt hat, nutzt Stilkompass dessen echte CHF-Preise. Sonst wird mit dem Tageskurs umgerechnet (Wechselkurse aus dem öffentlichen Shopify-Kursfeed, Fallback: manuell gepflegte Kurse).
           </p>
+          <p className="small muted">
+            <b>Gesamtsortiment:</b> Zusätzlich zu den neuesten Produkten (alle 30 Minuten aktualisiert) holt Stilkompass einmal täglich das komplette Sortiment grosser Shops – bis 25’000 Produkte pro Shop.
+            {deep ? ` Aktuell ${deep.total.toLocaleString('de-CH')} weitere Produkte.` : ''} Die App lädt diese Daten erst, wenn du suchst, und nur für die passenden Kategorien.
+          </p>
+          <p className="small muted">
+            <b>Automatische Shop-Entdeckung:</b> Nach jeder Aktualisierung prüft Stilkompass einige Marken, die bei den Fachhändlern geführt werden, auf einen eigenen Online-Shop. Aufgenommen wird ein Shop nur, wenn er in die Schweiz liefert, eindeutig der offizielle Shop der Marke ist, Rückgabe- und Datenschutzbestimmungen veröffentlicht, robots.txt den Produkt-Feed erlaubt und überwiegend Kleidung, Schuhe oder Taschen führt. Kundenbewertungen werden dabei nicht automatisch geprüft – solche Shops sind mit „Neu entdeckt“ gekennzeichnet. Shops, die nicht mehr in die Schweiz liefern oder 7 Tage nicht erreichbar sind, werden wieder entfernt.
+          </p>
+          {found.length > 0 && (
+            <div style={{ margin: '4px 0 10px' }}>
+              <div className="label" style={{ marginBottom: 6 }}>Neu entdeckte Shops ({found.length})</div>
+              <div className="chips">
+                {found.map((s) => (
+                  <a key={s.id} className="chip soft" href={`#/neu?shop=${encodeURIComponent(s.id)}`} title={`${s.domain} · gefunden über ${s.discovered!.via.slice(0, 3).join(', ')} · ${new Date(s.discovered!.at).toLocaleDateString('de-CH')}`}>
+                    {s.name} <span className="faint tiny">{s.country}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
           <p className="small muted"><b>Seriositätsprüfung (11/2026):</b> Jeder Shop hat Rückgabe-, Datenschutz- und AGB-Seiten sowie Kontakt- oder Firmenangaben. Händler und Secondhand-Shops wurden zusätzlich anhand von Kundenbewertungen geprüft. Entfernt wurden HEWI (Trustpilot 2.2/5, Beschwerden zu Echtheit und Lieferung) und Baghunter (keine überprüfbaren Bewertungen). Goodhood und Overkill haben gemischte Bewertungen und sind gekennzeichnet.</p>
           <p className="small muted">Ricardo, tutti.ch, Vinted, Vestiaire Collective, Grailed und eBay bieten keine kostenlose, frei nutzbare Such-API. Scraping wäre ein Verstoss gegen ihre Nutzungsbedingungen. Stilkompass öffnet deshalb deren eigene Suche mit deinen Suchbegriffen (Direktlinks).</p>
           <div className="table-wrap" style={{ marginTop: 12 }}>
@@ -31,8 +56,8 @@ export function About() {
                   <tr key={s.id}>
                     <td><a href={`https://${s.domain}`} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600 }}>{s.name}</a> <span className="faint tiny">{s.country}</span></td>
                     <td className="small">{s.segment === 'secondhand' ? 'Secondhand' : 'Neu'}</td>
-                    <td className="small">{s.trust ? <span style={{ color: s.trust.level === 'verified' ? 'var(--good)' : 'var(--warn)' }} title={s.trust.note}>{s.trust.level === 'verified' ? '✓ ' : '⚠ '}{s.trust.basis}</span> : '–'}</td>
-                    <td className="num small">{s.health?.products ?? '–'}</td>
+                    <td className="small">{s.trust ? <span style={{ color: s.trust.level === 'mixed' ? 'var(--warn)' : 'var(--good)' }} title={s.trust.level === 'auto' ? (s.discovered?.checks ?? []).join(' · ') : s.trust.note}>{s.trust.level === 'mixed' ? '⚠ ' : '✓ '}{s.trust.level === 'auto' ? 'Neu entdeckt · automatisch geprüft (keine Bewertungsprüfung)' : s.trust.basis}</span> : '–'}</td>
+                    <td className="num small">{s.health?.products ?? '–'}{deep?.shops[s.id]?.n ? <span className="faint tiny" title="zusätzlich im Gesamtsortiment"> +{deep.shops[s.id].n.toLocaleString('de-CH')}</span> : null}</td>
                     <td className="small">{s.market ? `CHF (CH-Markt, ${s.market.mode === 'ddp' ? 'inkl. MWST' : 'zzgl. Import'})` : s.currency === 'CHF' ? 'CHF' : `${s.currency} → CHF, ${s.duty === 'ddp' ? 'DDP' : s.duty === 'dap' ? 'zzgl. Import' : ''}`}</td>
                     <td className="small">{s.shipping.cost === 0 ? 'gratis' : `${s.shipping.currency} ${s.shipping.cost}`}{s.shipping.freeFrom ? `, gratis ab ${s.shipping.freeFrom}` : ''} {s.shipping.verified ? '✓' : <span className="faint">(geschätzt)</span>}</td>
                     <td className="small">{s.health?.ok ? <span style={{ color: 'var(--good)' }}>aktuell</span> : <span style={{ color: 'var(--warn)' }}>{s.health?.error ?? 'veraltet'}</span>}</td>

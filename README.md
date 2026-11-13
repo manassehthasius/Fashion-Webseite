@@ -11,6 +11,8 @@ Kostenlose, werbefreie Web-App, die hochwertige Kleidung zum **besten Gesamtprei
 | Bereich | Was es kann |
 |---|---|
 | **Neue Kleidung** | ~47’000 Produkte von 87 Qualitäts-, Marken- und Multibrand-Shops (darunter Napapijri, Belstaff, Lyle & Scott, Rains, Stüssy, Jack Wolfskin, Filling Pieces) mit Lieferung in die Schweiz (z. B. NIKIN, QWSTION, ROTAUF, Muntagnard, Sunspel, Drake's, Norse Projects, Merz b. Schwanen, Colorful Standard, Private White V.C., Taylor Stitch, Tricker's, Asphaltgold, AFEW, Overkill, Footdistrict). Echte CHF-Preise, wo der Shop einen Schweizer Markt hat. |
+| **Gesamtsortiment** | Zusätzlich zu den neuesten Produkten holt die Engine einmal täglich das komplette Sortiment grosser Shops (bis 25’000 Produkte pro Shop, mehrere 100’000 insgesamt). Die App lädt diese Daten erst beim Suchen und nur für die passenden Kategorien. |
+| **Neue Shops automatisch** | Nach jeder Aktualisierung prüft die Engine einige Marken, die bei den Fachhändlern geführt werden, auf einen eigenen Online-Shop: Lieferung in die Schweiz, offizieller Marken-Shop, Rückgabe-/Datenschutzbestimmungen, robots.txt, überwiegend Kleidung, plausible Preise (Schutz vor Fake-Shops). Gefundene Shops erscheinen als „Neu entdeckt“. |
 | **Secondhand & Vintage** | ~11’000 Teile von REAWAKE (Zürich), Labellov, Thrifted, Rokit, Vintage Folk und PICKNWEIGHT, mit Zustand. Dazu Direktsuche auf Ricardo, tutti.ch, Vestiaire Collective, eBay.ch, Grailed (und Vinted, das nicht in die Schweiz liefert). |
 | **Gesamtpreis** | Artikel + Versand (inkl. Gratisversand-Schwelle) + 8,1 % Einfuhr-MWST + Post-Verzollungsgebühr. Zoll auf Kleidung ist seit 1.1.2024 abgeschafft. Warenkorb-Rechner pro Shop. |
 | **Qualitätsscore 0–100** | Material, Verarbeitung, Markenruf, Herkunft/Zertifikate, Langlebigkeit bzw. Zustand. Jede Komponente ist als Daten, kuratiert oder Schätzung gekennzeichnet. |
@@ -76,6 +78,7 @@ GitHub Actions führt die Engine alle 30 Minuten aus und veröffentlicht die Sei
 - Die Daten liegen im Branch `data` (nur der letzte Stand, ohne Historie).
 - Deine Watchlist liegt AES-256-verschlüsselt im Branch `userstate`. Ohne Passphrase ist sie nicht lesbar, und das Token bleibt nur in deinem Browser.
 - Optional: Mit der Repository-Variable `EMBED_BUDGET` steuerst du, wie viele neue Produktbilder pro Lauf in den KI-Index kommen (Standard 1500).
+- Optional: `DEEP_BUDGET` (Feed-Seiten fürs Gesamtsortiment pro Lauf, Standard 400) und `DISCOVER_PROBES` (Marken, die pro Lauf auf einen eigenen Shop geprüft werden, Standard 8, `0` schaltet die Entdeckung aus).
 
 **Gut zu wissen:**
 - GitHub startet geplante Läufe teils mit einigen Minuten Verzögerung.
@@ -88,6 +91,8 @@ Alle Shops wurden geprüft (11/2026): Rückgabe-, Datenschutz- und AGB-Seiten, K
 ## Transparenz: Quellen und Grenzen
 
 - **Datenquellen:** öffentliche Shopify-Storefront-Feeds (`/products.json`, `/meta.json`, öffentlicher Kursfeed).
+  - Gesamtsortiment: pro Shop höchstens 1× täglich vollständig, mit Pausen zwischen den Seiten. Preise dort sind bis 24 h alt; beobachtete Teile werden alle 30 Minuten einzeln aktualisiert.
+  - Automatisch gefundene Shops: Versandkosten sind geschätzt, Kundenbewertungen werden nicht automatisch geprüft (in der App gekennzeichnet).
   - Die Lieferung in die Schweiz wird bei jedem Lauf geprüft, robots.txt wird respektiert.
   - Pro Shop höchstens ein Abruf alle 30 Minuten, mit Pausen zwischen den Seiten.
   - Die vollständige Shop-Liste mit Status steht in der App unter *Methode & Transparenz*.

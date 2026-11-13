@@ -3,6 +3,7 @@ import { useSyncExternalStore } from 'react';
 import type { Product, SavedSearch, SearchFilters, StyleProfile, UserState, WatchItem } from '@shared/types';
 import { DEFAULT_PROFILE } from '@shared/personalize';
 import { uid } from './format';
+import { rememberDeep } from './data';
 import { emptyInterests, learnImage, learnProduct, learnSearch, SIGNAL, type Dim, type Interests } from '@shared/interests';
 
 const KEY = 'stilkompass:user:v1';
@@ -73,6 +74,7 @@ export function isFavorite(id: string) {
 }
 export function toggleFavorite(p: Product): boolean {
   const on = !state.favorites.includes(p.id);
+  rememberDeep(p as Product & { dp?: 1 });
   learn((i) => learnProduct(i, p, on ? SIGNAL.favorite : SIGNAL.unfavorite));
   update((s) => ({
     ...s,
@@ -87,6 +89,7 @@ export function getWatch(id: string): WatchItem | undefined {
   return state.watch.find((w) => w.id === id);
 }
 export function upsertWatch(p: Product, opts: Partial<Pick<WatchItem, 'target' | 'size' | 'notifyDrop' | 'notifyStock'>>) {
+  rememberDeep(p as Product & { dp?: 1 });
   if (!state.watch.some((w) => w.id === p.id)) learn((i) => learnProduct(i, p, SIGNAL.watch));
   update((s) => {
     const existing = s.watch.find((w) => w.id === p.id);

@@ -67,8 +67,8 @@ jobs:
           path: .cache/models
           key: hf-marqo-fashionsiglip-q8-v1
 
-      - name: Shops abrufen, Preise berechnen, Alarme senden, Bild-Index ergänzen
-        run: npx tsx engine/run.ts --embed=${{ vars.EMBED_BUDGET || '1500' }}
+      - name: Shops abrufen, Gesamtsortiment & neue Shops, Preise berechnen, Alarme senden, Bild-Index ergänzen
+        run: npx tsx engine/run.ts --embed=${{ vars.EMBED_BUDGET || '1500' }} --deep=${{ vars.DEEP_BUDGET || '400' }} --discover=${{ vars.DISCOVER_PROBES || '8' }}
 
       - name: App bauen
         run: |

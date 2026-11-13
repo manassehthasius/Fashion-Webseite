@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { getData, useData, type Item } from '../lib/data';
+import { useEffect, useMemo } from 'react';
+import { ensureDeepFor, getData, useData, type Item } from '../lib/data';
 import { clearCompare, toggleCompare, useCompare, useUser } from '../lib/store';
 import { basketCost, landedCost } from '@shared/pricing';
 import { sameProductOffers } from '@shared/similar';
@@ -14,6 +14,9 @@ export function Compare() {
   const data = useData();
   const ids = useCompare();
   const user = useUser();
+  useEffect(() => {
+    if (data.status === 'ready') ensureDeepFor(ids);
+  }, [data.status, ids]);
   const items = useMemo(() => ids.map((id) => data.byId.get(id)).filter((p): p is Item => !!p), [ids, data.byId]);
   const rows = useMemo(() => items.map((p) => ({ p, c: landedCost(p.p, data.shopById[p.s], data.fx!, { compareAt: p.pc }) })), [items, data.shopById, data.fx]);
   const bestTotal = Math.min(...rows.map((r) => r.c.total));

@@ -17,6 +17,11 @@ export interface ShopState {
   totalPages?: number;
   shipsToCH?: boolean;
   products?: number;
+  /** Anzahl veröffentlichter Produkte laut /meta.json */
+  count?: number;
+  /** Gesamtsortiment: letzter vollständiger Abruf (Unix s) bzw. letzter Versuch */
+  deepAt?: number;
+  deepTriedAt?: number;
 }
 
 export interface ProductState {
@@ -65,6 +70,8 @@ export const paths = {
   history: path.join(DATA_DIR, 'history.json'),
   meta: path.join(DATA_DIR, 'meta.json'),
   details: path.join(DATA_DIR, 'details'),
+  deep: path.join(DATA_DIR, 'deep'),
+  discovery: path.join(STATE_DIR, 'discovery.json'),
   state: path.join(STATE_DIR, 'engine.json'),
   alertsLog: path.join(STATE_DIR, 'alerts-log.json'),
   userDir: path.join(STATE_DIR, 'user'),

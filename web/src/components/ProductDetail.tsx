@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { getData, loadDetails, loadHistory, useData, type Item } from '../lib/data';
+import { ensureDeepFor, getData, loadDetails, loadHistory, loadLiveDetails, rememberDeep, useData, type Item } from '../lib/data';
 import { imgUrl, productUrl } from '@shared/media';
 import { landedCost } from '@shared/pricing';
 import { qualityLabel, qualityScore } from '@shared/quality';
@@ -20,16 +20,21 @@ const GENDER: Record<string, string> = { women: 'Damen', men: 'Herren', unisex: 
 export function ProductDetailHost({ id }: { id: string | null }) {
   const data = useData();
   const p = id ? data.byId.get(id) : undefined;
+  // Teile aus dem Gesamtsortiment ggf. nachladen (z. B. Link aus Favoriten oder nach dem Neuladen)
+  useEffect(() => {
+    if (id && !p && data.status === 'ready') ensureDeepFor([id]);
+  }, [id, !!p, data.status]);
+  const loadingDeep = data.deep.loading.length > 0;
   return (
     <Panel open={!!id} onClose={() => setParam('p', null)} title={p ? `${p.b}` : 'Produkt'}>
-      {id && !p && data.status === 'ready' && <div className="empty">Dieses Produkt ist nicht mehr im Katalog (ausverkauft oder entfernt).</div>}
+      {id && !p && data.status === 'ready' && (loadingDeep ? <div className="empty"><span className="spinner" /></div> : <div className="empty">Dieses Produkt ist nicht mehr im Katalog (ausverkauft oder entfernt).</div>)}
       {p && <ProductDetail p={p} key={p.id} />}
     </Panel>
   );
 }
 
 function ProductDetail({ p }: { p: Item }) {
-  const { shopById, items, fx } = getData();
+  const { shopById, all: items, fx } = getData();
   const shop = shopById[p.s];
   const user = useUser();
   const compare = useCompare();
@@ -38,8 +43,14 @@ function ProductDetail({ p }: { p: Item }) {
   const [watchOpen, setWatchOpen] = useState(false);
   useEffect(() => {
     recordView(p);
-    loadDetails(p.s).then((d) => setDetails(d[p.id] ?? [[], '']));
-    loadHistory().then((h) => setHist(h[p.id] ?? []));
+    rememberDeep(p);
+    if (p.dp) {
+      loadLiveDetails(p, shop).then(setDetails);
+      setHist([]);
+    } else {
+      loadDetails(p.s).then((d) => setDetails(d[p.id] ?? [[], '']));
+      loadHistory().then((h) => setHist(h[p.id] ?? []));
+    }
   }, [p.id, p.s]);
 
   const cost = useMemo(() => landedCost(p.p, shop, fx!, { compareAt: p.pc }), [p, shop, fx]);
@@ -79,6 +90,8 @@ function ProductDetail({ p }: { p: Item }) {
             <div className="small" style={{ marginTop: 6 }}>
               {shop.trust.level === 'verified' ? (
                 <span className="tag good" title={shop.trust.basis}>✓ Geprüfter Shop · {shop.trust.basis}</span>
+              ) : shop.trust.level === 'auto' ? (
+                <span className="tag auto" title={(shop.discovered?.checks ?? []).join(' · ')}>✓ Neu entdeckt · offizieller Marken-Shop, automatisch geprüft (keine Bewertungsprüfung)</span>
               ) : (
                 <span className="tag warn" title={shop.trust.basis}>⚠ {shop.trust.note ?? 'Gemischte Bewertungen'} ({shop.trust.basis})</span>
               )}
@@ -94,6 +107,7 @@ function ProductDetail({ p }: { p: Item }) {
             {p.drop && <span className="tag good">Preissturz −{p.drop}%</span>}
           </div>
           <div className="small muted">Gesamtpreis in die Schweiz bei Einzelbestellung{cost.estimated ? ' · enthält Schätzungen' : ''}</div>
+          {p.dp && <div className="tiny faint" style={{ marginTop: 4 }}>Aus dem Gesamtsortiment des Shops · Preis & Verfügbarkeit Stand {new Date(p.upd * 1000).toLocaleDateString('de-CH')} (1× täglich aktualisiert)</div>}
         </div>
 
         <div className="actions">
@@ -205,7 +219,13 @@ function ProductDetail({ p }: { p: Item }) {
 
         <section>
           <div className="label" style={{ marginBottom: 8 }}>Preisverlauf</div>
-          {hist ? <PriceChart points={hist} current={p.tot} /> : <div className="skeleton" style={{ height: 120 }} />}
+          {p.dp ? (
+            <div className="small muted">Für Teile aus dem Gesamtsortiment wird der Verlauf ab dem Setzen eines Preisalarms aufgezeichnet.</div>
+          ) : hist ? (
+            <PriceChart points={hist} current={p.tot} />
+          ) : (
+            <div className="skeleton" style={{ height: 120 }} />
+          )}
         </section>
 
         {offers.length > 0 && (

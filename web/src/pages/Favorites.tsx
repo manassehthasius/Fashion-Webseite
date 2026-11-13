@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { useData } from '../lib/data';
+import { useEffect, useMemo } from 'react';
+import { ensureDeepFor, useData } from '../lib/data';
 import { toggleFavorite, useUser } from '../lib/store';
 import { ProductGrid } from '../components/ProductGrid';
 import { Empty, Loading, toast } from '../components/ui';
@@ -10,6 +10,9 @@ import { chf } from '../lib/format';
 export function Favorites() {
   const data = useData();
   const user = useUser();
+  useEffect(() => {
+    if (data.status === 'ready') ensureDeepFor(user.favorites);
+  }, [data.status, user.favorites]);
   const { live, gone } = useMemo(() => {
     const live = user.favorites.map((id) => data.byId.get(id)).filter((p): p is NonNullable<typeof p> => !!p);
     const gone = user.favorites.filter((id) => !data.byId.has(id));

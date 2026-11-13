@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useData, type Item } from '../lib/data';
+import { loadDeepIndex, useData, type Item } from '../lib/data';
 import { useUser } from '../lib/store';
 import { href, navigate } from '../lib/router';
 import { SearchBar } from '../components/SearchBar';
@@ -59,6 +59,26 @@ export function Home() {
 
   const nNew = data.items.filter((p) => p.seg === 'new').length;
   const nSecond = data.items.length - nNew;
+  useEffect(() => {
+    if (data.status === 'ready') void loadDeepIndex();
+  }, [data.status]);
+  const nDeep = data.deep.index?.total ?? 0;
+  // Automatisch neu aufgenommene Shops der letzten 14 Tage
+  const newShops = useMemo(() => data.shops.filter((s) => s.discovered && Date.now() - Date.parse(s.discovered.at) < 14 * 86400e3), [data.shops]);
+  const newShopItems = useMemo(() => {
+    if (!newShops.length) return [];
+    const ids = new Set(newShops.map((s) => s.id));
+    const per = new Map<string, number>();
+    return data.items
+      .filter((p) => ids.has(p.s) && p.av)
+      .sort((a, b) => b.v - a.v)
+      .filter((p) => {
+        const n = per.get(p.s) ?? 0;
+        per.set(p.s, n + 1);
+        return n < 3;
+      })
+      .slice(0, 16);
+  }, [newShops, data.items]);
 
   return (
     <div className="container">
@@ -75,6 +95,7 @@ export function Home() {
         <div className="hero-stats">
           <span><b>{nNew.toLocaleString('de-CH')}</b> neue Produkte</span>
           <span><b>{nSecond.toLocaleString('de-CH')}</b> Secondhand & Vintage</span>
+          {nDeep > 0 && <span title="Komplettes Sortiment der Shops, wird beim Suchen mit durchsucht"><b>+{nDeep.toLocaleString('de-CH')}</b> im Gesamtsortiment</span>}
           <span><b>{data.shops.length}</b> Shops</span>
           {data.generatedAt && <span>Aktualisiert {ago(Date.parse(data.generatedAt) / 1000)}</span>}
         </div>
@@ -114,6 +135,14 @@ export function Home() {
           {rails.drops.length > 0 && <RailSection title="Preisstürze & Sale" sub="Echte Preissenkungen bei hochwertigen Teilen" link={href('/suche', { sale: 1, sort: 'drop' })} items={rails.drops} />}
           <RailSection title="Beste Preis-Leistung" sub="Hohe, datenbasierte Qualität zu einem Preis unter dem Kategorie-Durchschnitt" link={href('/neu', { sort: 'value' })} items={rails.value} />
           {rails.treasures.length > 0 && <RailSection title="Secondhand-Schätze" sub="Top-Zustand und Qualität, oft zu einem Bruchteil des Neupreises" link={href('/secondhand', { sort: 'value' })} items={rails.treasures} />}
+          {newShopItems.length > 0 && (
+            <RailSection
+              title="Neu entdeckte Shops"
+              sub={`Automatisch gefunden & geprüft: ${newShops.map((s) => s.name).slice(0, 6).join(', ')}${newShops.length > 6 ? ` und ${newShops.length - 6} weitere` : ''}`}
+              link={href('/neu', { shop: newShops.map((s) => s.id).join('~') })}
+              items={newShopItems}
+            />
+          )}
           {rails.fresh.length > 0 && <RailSection title="Neu eingetroffen" sub="Seit den letzten Tagen in den Shops" link={href('/neu', { sort: 'new' })} items={rails.fresh} />}
           {rails.seen.length > 0 && <RailSection title="Zuletzt angesehen" items={rails.seen} />}
           {rails.swiss.length > 0 && <RailSection title="Aus Schweizer Shops" sub="Keine Importkosten, schnelle Lieferung" link={href('/neu', { shop: data.shops.filter((s) => s.country === 'CH' && s.segment === 'new').map((s) => s.id).join('~') })} items={rails.swiss} />}

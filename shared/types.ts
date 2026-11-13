@@ -68,12 +68,15 @@ export interface Shop {
   trust?: ShopTrust;
   /** Laufzeit: Schweizer Shopify-Markt mit CHF-Preisen (von der Engine erkannt) */
   market?: ShopMarket | null;
+  /** Automatisch entdeckter Shop: Zeitpunkt der Aufnahme (ISO) und Herkunft der Marke */
+  discovered?: { at: string; via: string[]; checks: string[] };
   /** Laufzeit: letzter Abruf */
   health?: { ok: boolean; at: string; products: number; error?: string };
 }
 
 export interface ShopTrust {
-  level: 'verified' | 'mixed';
+  /** verified = von Hand geprüft, auto = automatisch gefunden & technisch geprüft (keine Bewertungsprüfung), mixed = gemischte Bewertungen */
+  level: 'verified' | 'auto' | 'mixed';
   basis: string; // z. B. "Offizieller Marken-Shop", "Trustpilot 4.6/5 (7’800 Bewertungen)"
   note?: string; // Warnhinweis bei gemischten Bewertungen
 }

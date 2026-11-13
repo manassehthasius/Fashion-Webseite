@@ -5,9 +5,9 @@ import type { Shop, ShopTrust } from '../shared/types';
 
 type S = Omit<Shop, 'segment' | 'exportVatRemoved'> & { segment?: Shop['segment']; exportVatRemoved?: boolean };
 
-const VAT: Record<string, number> = { DE: 0.19, DK: 0.25, NL: 0.21, GB: 0.2, FR: 0.2, ES: 0.21, PT: 0.23, BE: 0.21, SE: 0.25, AT: 0.2, IT: 0.22, US: 0, CA: 0, CH: 0.081 };
+export const VAT: Record<string, number> = { DE: 0.19, DK: 0.25, NL: 0.21, GB: 0.2, FR: 0.2, ES: 0.21, PT: 0.23, BE: 0.21, SE: 0.25, AT: 0.2, IT: 0.22, US: 0, CA: 0, CH: 0.081 };
 
-const est = (currency: string, cost: number, freeFrom: number | undefined, days: [number, number], note?: string, carrier?: 'post' | 'courier') => ({ currency, cost, freeFrom, days, verified: false, note, carrier });
+export const est = (currency: string, cost: number, freeFrom: number | undefined, days: [number, number], note?: string, carrier?: 'post' | 'courier') => ({ currency, cost, freeFrom, days, verified: false, note, carrier });
 const ver = (currency: string, cost: number, freeFrom: number | undefined, days: [number, number], note?: string, carrier?: 'post' | 'courier') => ({ currency, cost, freeFrom, days, verified: true, note, carrier });
 
 const RAW: S[] = [

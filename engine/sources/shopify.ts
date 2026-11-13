@@ -41,6 +41,23 @@ export async function fetchPage(domain: string, page: number, prefix = ''): Prom
   return r.data.products ?? [];
 }
 
+/**
+ * Einzelnes Produkt (für beobachtete Teile aus dem Gesamtsortiment): Daten aus .json (mit Währung),
+ * Verfügbarkeit je Variante aus .js. null, wenn nicht (mehr) vorhanden oder Währung unerwartet.
+ */
+export async function fetchProduct(domain: string, handle: string, prefix: string, currency: string): Promise<ShopifyProduct | null> {
+  const h = encodeURIComponent(handle);
+  const r = await fetchJson<{ product: ShopifyProduct & { variants: (ShopifyVariant & { price_currency?: string })[] } }>(`https://${domain}${prefix}/products/${h}.json`, { retries: 1 });
+  const p = r.data?.product;
+  if (!p?.variants?.length) return null;
+  const cur = p.variants[0].price_currency;
+  if (cur && cur !== currency) return null;
+  const js = await fetchJson<{ variants?: { id: number; available: boolean }[] }>(`https://${domain}${prefix}/products/${h}.js`, { retries: 1 }).catch(() => null);
+  const avail = new Map((js?.data?.variants ?? []).map((v) => [v.id, v.available]));
+  if (avail.size) for (const v of p.variants) v.available = avail.get(v.id) ?? false;
+  return p;
+}
+
 /** Holt die angegebenen Seiten nacheinander mit Pause (Höflichkeit) */
 export async function fetchPages(domain: string, pages: number[], prefix = '', delayMs = 700): Promise<{ products: ShopifyProduct[]; lastPageShort: boolean; failed: number }> {
   const out: ShopifyProduct[] = [];

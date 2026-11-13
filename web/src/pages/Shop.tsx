@@ -3,7 +3,8 @@ import type { SearchFilters } from '@shared/types';
 import { CATEGORY_LABELS, COLOR_BY_KEY, CONDITION_LABELS, MATERIAL_BY_KEY, STYLE_LABELS } from '@shared/taxonomy';
 import { platformLinks } from '@shared/platforms';
 import { isPersonalized } from '@shared/personalize';
-import { useData } from '../lib/data';
+import { ensureDeep, useData } from '../lib/data';
+import { deepGroupsFor } from '@shared/deep';
 import { activeFilterCount, filtersFromParams, filtersToParams, runQuery, SORT_LABELS, type Sort } from '../lib/query';
 import { setParams, useRoute } from '../lib/router';
 import { recordSearch, saveSearch, useUser } from '../lib/store';
@@ -43,7 +44,18 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const interests = useMemo(() => (personalize ? user.interests : undefined), [paramKey, segment, personalize]);
   const input = useDeferredValue({ q, filters, segment, sort, profile: user.profile, personalize, interests });
-  const result = useMemo(() => (data.status === 'ready' ? runQuery(input) : null), [data.status, data.items, input]);
+  const result = useMemo(() => (data.status === 'ready' ? runQuery(input) : null), [data.status, data.all, input]);
+
+  // Bei einer Suche (Text, Marke oder Kategorie) zusätzlich das Gesamtsortiment aller Shops durchsuchen
+  const eff = result?.effective;
+  const searching = !!(q.trim() || eff?.brands?.length || eff?.categories?.length);
+  const deepGroups = searching ? deepGroupsFor(eff?.categories) : [];
+  const deepKey = deepGroups.join(',');
+  useEffect(() => {
+    if (deepKey && data.status === 'ready') void ensureDeep(deepKey.split(','));
+  }, [deepKey, data.status]);
+  const deepLoading = data.deep.loading.length > 0 || (searching && !!data.deep.index && deepGroups.some((g) => data.deep.index!.groups[g] && !data.deep.loaded.includes(g)));
+  const deepCount = result ? result.items.reduce((a, p) => a + (p.dp ? 1 : 0), 0) : 0;
 
   // Suchbegriffe fliessen in die gelernten Interessen ein
   useEffect(() => {
@@ -112,7 +124,14 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
             <button className="btn sm mobile-only" onClick={() => setMobileFilters(true)}>
               <Icon name="filter" size={16} /> Filter{fcount ? ` (${fcount})` : ''}
             </button>
-            <span className="count">{result ? `${result.items.length.toLocaleString('de-CH')} Produkte` : ''}</span>
+            <span className="count">
+              {result ? `${result.items.length.toLocaleString('de-CH')} Produkte` : ''}
+              {deepLoading ? (
+                <span className="deep-status"> · <span className="spinner sm" aria-hidden /> durchsuche das Gesamtsortiment aller Shops …</span>
+              ) : deepCount > 0 ? (
+                <span className="deep-status" title="Ältere und weitere Produkte aus dem kompletten Sortiment der Shops (1× täglich aktualisiert)"> · davon {deepCount.toLocaleString('de-CH')} aus dem Gesamtsortiment</span>
+              ) : null}
+            </span>
             <span className="spacer" />
             {canPersonalize && (
               <label className="row small muted" style={{ gap: 8 }}>
