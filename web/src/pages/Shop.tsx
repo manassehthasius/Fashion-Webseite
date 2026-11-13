@@ -1,13 +1,14 @@
-import { useDeferredValue, useMemo, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import type { SearchFilters } from '@shared/types';
 import { CATEGORY_LABELS, COLOR_BY_KEY, CONDITION_LABELS, MATERIAL_BY_KEY, STYLE_LABELS } from '@shared/taxonomy';
 import { platformLinks } from '@shared/platforms';
-import { profileIsEmpty } from '@shared/personalize';
+import { isPersonalized } from '@shared/personalize';
 import { useData } from '../lib/data';
 import { activeFilterCount, filtersFromParams, filtersToParams, runQuery, SORT_LABELS, type Sort } from '../lib/query';
 import { setParams, useRoute } from '../lib/router';
-import { saveSearch, useUser } from '../lib/store';
+import { recordSearch, saveSearch, useUser } from '../lib/store';
 import { Filters } from '../components/Filters';
+import { ProductCompareBox } from '../components/ProductCompareBox';
 import { ProductGrid } from '../components/ProductGrid';
 import { SearchBar } from '../components/SearchBar';
 import { Icon } from '../components/Icon';
@@ -27,13 +28,26 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
   const route = useRoute();
   const q = route.params.get('q') ?? '';
   const sort = (route.params.get('sort') as Sort) || 'relevance';
-  const personalize = route.params.get('me') !== '0' && !profileIsEmpty(user.profile);
-  const filters = useMemo(() => filtersFromParams(route.params), [route.params]);
+  const canPersonalize = isPersonalized(user.profile, user.interests);
+  const personalize = route.params.get('me') !== '0' && canPersonalize;
+  // Schlüssel ohne Produktdetail-Parameter (?p=), damit das Öffnen eines Produkts keine neue Suche auslöst
+  const paramKey = [...route.params.entries()].filter(([k]) => k !== 'p').map(([k, v]) => `${k}=${v}`).join('&');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filters = useMemo(() => filtersFromParams(route.params), [paramKey]);
   const [mobileFilters, setMobileFilters] = useState(false);
   const [saveOpen, setSaveOpen] = useState(false);
 
-  const input = useDeferredValue({ q, filters, segment, sort, profile: user.profile, personalize });
+  // Interessen pro Suche einfrieren, damit die Liste beim Ansehen von Produkten nicht umsortiert wird
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const interests = useMemo(() => (personalize ? user.interests : undefined), [paramKey, segment, personalize]);
+  const input = useDeferredValue({ q, filters, segment, sort, profile: user.profile, personalize, interests });
   const result = useMemo(() => (data.status === 'ready' ? runQuery(input) : null), [data.status, data.items, input]);
+
+  // Suchbegriffe fliessen in die gelernten Interessen ein
+  useEffect(() => {
+    if (q && result) recordSearch(q, result.effective);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, !!result]);
 
   const setFilters = (f: SearchFilters) => setParams(filtersToParams(f));
   const [title, sub] = TITLES[segment];
@@ -101,7 +115,7 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
             </button>
             <span className="count">{result ? `${result.items.length.toLocaleString('de-CH')} Produkte` : ''}</span>
             <span className="spacer" />
-            {!profileIsEmpty(user.profile) && (
+            {canPersonalize && (
               <label className="row small muted" style={{ gap: 8 }}>
                 <Switch checked={personalize} onChange={(v) => setParams({ me: v ? null : '0' })} /> Für mich
               </label>
@@ -115,11 +129,14 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
               <Icon name="bell" size={16} /> Suche speichern
             </button>
           </div>
-          {result && result.understood.length > 0 && (
+          {result && (result.understood.length > 0 || result.parsed.corrected.length > 0) && (
             <div className="understood small muted" style={{ marginTop: -6, marginBottom: 12 }}>
-              <Icon name="sparkle" size={15} /> Verstanden: {result.understood.join(' · ')}
+              <Icon name="sparkle" size={15} />
+              {result.parsed.corrected.length > 0 && <span>Korrigiert: {result.parsed.corrected.map(([a, b]) => `„${a}“ → ${b}`).join(', ')} ·</span>}
+              {result.understood.length > 0 && <span>Verstanden: {result.understood.join(' · ')}</span>}
             </div>
           )}
+          {result && q && result.specific && <ProductCompareBox items={result.items} query={correctedQuery(q, result.parsed.corrected)} />}
           {chips.length > 0 && (
             <div className="chips" style={{ marginBottom: 18 }}>
               {chips.map((c) => (
@@ -133,12 +150,12 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
 
           {data.status === 'loading' && <Loading />}
           {data.status === 'error' && <Empty title="Daten nicht verfügbar">{data.error}</Empty>}
-          {result && result.items.length === 0 && (
+          {result && result.items.length === 0 && !(q && result.specific) && (
             <Empty title="Keine Treffer" action={<button className="btn" onClick={() => setParams({ ...Object.fromEntries(Object.keys(filtersToParams({})).map((k) => [k, null])), q: null })}>Filter zurücksetzen</button>}>
               Versuche weniger Filter oder einen allgemeineren Begriff. {segment !== 'new' && 'Oder suche direkt auf den Marktplätzen oben.'}
             </Empty>
           )}
-          {result && result.items.length > 0 && <ProductGrid items={result.items} profile={personalize ? user.profile : undefined} resetKey={`${q}|${sort}|${route.params.toString()}`} />}
+          {result && result.items.length > 0 && <ProductGrid items={result.items} profile={personalize ? user.profile : undefined} resetKey={`${q}|${sort}|${paramKey}`} />}
 
           {segment !== 'secondhand' && result && (
             <section className="section">
@@ -162,6 +179,12 @@ export function Shop({ segment }: { segment: 'new' | 'secondhand' | 'all' }) {
       <SaveSearchPanel open={saveOpen} onClose={() => setSaveOpen(false)} q={q} filters={filters} segment={segment} />
     </div>
   );
+}
+
+function correctedQuery(q: string, fixes: [string, string][]): string {
+  let out = q;
+  for (const [a, b] of fixes) out = out.replace(new RegExp(a, 'i'), b);
+  return out;
 }
 
 function SaveSearchPanel({ open, onClose, q, filters, segment }: { open: boolean; onClose: () => void; q: string; filters: SearchFilters; segment: 'new' | 'secondhand' | 'all' }) {

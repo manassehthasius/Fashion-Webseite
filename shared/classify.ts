@@ -305,7 +305,10 @@ export function extractBrand(vendor: string, title: string, tags: string[], shop
   const v = (vendor ?? '').trim();
   const looksLikeCode = !v || /^[A-Z]{0,3}\d{2,}$/i.test(v) || /^(default|vendor|unknown)$/i.test(v);
   if (!shop.multiBrand) {
-    if (!looksLikeCode && v.length < 40 && !/myshopify/i.test(v)) return v.toLowerCase() === shop.name.toLowerCase() ? shop.name : titleCase(v) === v ? v : smartCase(v);
+    // Eigenmarken-Shops: Vendor ist oft ein Saison-/Abteilungscode ("Hdaw26", "KnowledgeCotton Apparel - MEN").
+    // Nur bekannte Fremdmarken übernehmen, sonst der Shopname.
+    const alnum = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!looksLikeCode && brandTier(v) !== undefined && !alnum(v).startsWith(alnum(shop.name).slice(0, 5))) return smartCase(v);
     return shop.name;
   }
   if (!looksLikeCode) return smartCase(v);

@@ -3,7 +3,7 @@ import type { Category, Gender } from '@shared/types';
 import { CATEGORY_LABELS, COLOR_BY_KEY, STYLE_LABELS } from '@shared/taxonomy';
 import { imgUrl } from '@shared/media';
 import { useData, type Item } from '../lib/data';
-import { useUser } from '../lib/store';
+import { recordImage, useUser } from '../lib/store';
 import { href, navigate, useRoute } from '../lib/router';
 import { getEmbIndex, loadEmbIndex, nearest, vectorOf } from '../lib/clipIndex';
 import { dominantColors, embedImage, nearestColorKey } from '../lib/clipModel';
@@ -41,9 +41,9 @@ export default function ImageSearch() {
   const fileRef = useRef<HTMLInputElement>(null);
   const queryVec = useRef<Float32Array | null>(null);
 
-  const rank = (q: Float32Array) => {
+  const rank = (q: Float32Array): Attr[] => {
     const idx = getEmbIndex();
-    if (!idx) return;
+    if (!idx) return [];
     const near = nearest(q, 400, (id) => {
       const p = data.byId.get(id);
       return !!p && p.av;
@@ -76,7 +76,9 @@ export default function ImageSearch() {
         found.push({ group, key, label: label ?? key, p: probs[i] });
       }
       setAttrs(found);
+      return found;
     }
+    return [];
   };
 
   useEffect(() => {
@@ -116,7 +118,12 @@ export default function ImageSearch() {
       const v = await embedImage(src, (p) => setProgress(p.progress));
       setPhase('embed');
       queryVec.current = v;
-      rank(v);
+      const found = rank(v);
+      // Bild-Interesse lernen (nur der Vektor und erkannte Merkmale werden gespeichert, nicht das Foto)
+      if (typeof src !== 'string') {
+        const get = (g: string) => found.find((a) => a.group === g && a.p >= 0.35)?.key;
+        recordImage(v, { cat: get('category') as Category | undefined, color: get('color'), style: get('style') as never }, found.map((a) => a.label).slice(0, 2).join(' · '));
+      }
       setPhase('done');
     } catch (e) {
       console.error(e);
@@ -155,7 +162,7 @@ export default function ImageSearch() {
       <div className="page-head">
         <div>
           <h1 style={{ fontSize: 'clamp(32px,4vw,46px)' }}>KI-Bildsuche</h1>
-          <p>Lade ein Foto hoch (Screenshot, Instagram, Strassen-Look) – Stilkompass findet ähnliche Teile im Katalog. Die KI (Marqo-FashionSigLIP) läuft lokal in deinem Browser: kostenlos, privat, ohne Upload an einen Server.</p>
+          <p>Lade ein Foto hoch (Screenshot, Instagram, Strassen-Look) – Stilkompass findet ähnliche Teile im Katalog und lernt deinen Stil für künftige Vorschläge. Die KI (Marqo-FashionSigLIP) läuft lokal in deinem Browser: kostenlos, privat, ohne Upload an einen Server. Gespeichert wird nur ein Zahlen-Fingerabdruck des Bildes, nie das Foto.</p>
         </div>
       </div>
 

@@ -3,6 +3,7 @@ import { useSyncExternalStore } from 'react';
 import type { Product, SavedSearch, SearchFilters, StyleProfile, UserState, WatchItem } from '@shared/types';
 import { DEFAULT_PROFILE } from '@shared/personalize';
 import { uid } from './format';
+import { emptyInterests, learnImage, learnProduct, learnSearch, SIGNAL, type Dim, type Interests } from '@shared/interests';
 
 const KEY = 'stilkompass:user:v1';
 const COMPARE_KEY = 'stilkompass:compare:v1';
@@ -72,6 +73,7 @@ export function isFavorite(id: string) {
 }
 export function toggleFavorite(p: Product): boolean {
   const on = !state.favorites.includes(p.id);
+  learn((i) => learnProduct(i, p, on ? SIGNAL.favorite : SIGNAL.unfavorite));
   update((s) => ({
     ...s,
     favorites: on ? [p.id, ...s.favorites] : s.favorites.filter((x) => x !== p.id),
@@ -85,6 +87,7 @@ export function getWatch(id: string): WatchItem | undefined {
   return state.watch.find((w) => w.id === id);
 }
 export function upsertWatch(p: Product, opts: Partial<Pick<WatchItem, 'target' | 'size' | 'notifyDrop' | 'notifyStock'>>) {
+  if (!state.watch.some((w) => w.id === p.id)) learn((i) => learnProduct(i, p, SIGNAL.watch));
   update((s) => {
     const existing = s.watch.find((w) => w.id === p.id);
     const item: WatchItem = {
@@ -178,4 +181,51 @@ export function clearCompare() {
     /* ignore */
   }
   csubs.forEach((f) => f());
+}
+
+// ---------- Gelernte Interessen ----------
+export function getInterests(): Interests {
+  return state.interests ?? emptyInterests();
+}
+/** Interessen still aktualisieren (löst keine sofortige Synchronisierung aus) */
+function learn(fn: (i: Interests) => Interests) {
+  const cur = state.interests ?? emptyInterests();
+  if (!cur.on) return;
+  state = { ...state, interests: fn(cur) };
+  persist();
+  subs.forEach((f) => f());
+}
+export function recordView(p: Product) {
+  if (state.interests?.seen?.[0] === p.id) return;
+  learn((i) => learnProduct(i, p, SIGNAL.view));
+}
+export function recordClick(p: Product) {
+  learn((i) => learnProduct(i, p, SIGNAL.click));
+}
+let lastSearch = '';
+export function recordSearch(q: string, f: SearchFilters) {
+  if (!q || q === lastSearch) return;
+  lastSearch = q;
+  learn((i) => learnSearch(i, f));
+}
+export function recordImage(vec: Float32Array, attrs: Parameters<typeof learnImage>[2], label?: string) {
+  learn((i) => learnImage(i, vec, attrs, label));
+}
+export function setLearning(on: boolean) {
+  update((s) => ({ ...s, interests: { ...(s.interests ?? emptyInterests()), on } }));
+}
+export function muteInterest(dim: Dim, key: string) {
+  update((s) => {
+    const i = s.interests ?? emptyInterests();
+    return { ...s, interests: { ...i, muted: [...new Set([...i.muted, `${dim}:${key}`])] } };
+  });
+}
+export function removeImageInterest(at: number) {
+  update((s) => {
+    const i = s.interests ?? emptyInterests();
+    return { ...s, interests: { ...i, img: i.img.filter((x) => x.at !== at) } };
+  });
+}
+export function resetInterests() {
+  update((s) => ({ ...s, interests: { ...emptyInterests(), on: s.interests?.on ?? true } }));
 }

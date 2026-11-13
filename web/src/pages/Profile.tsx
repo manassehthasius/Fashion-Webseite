@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import type { Category, Gender, Style, StyleProfile } from '@shared/types';
-import { CATEGORY_LABELS, COLORS, FIT_LABELS, MATERIALS, STYLE_LABELS } from '@shared/taxonomy';
-import { updateProfile, useUser } from '../lib/store';
+import { CATEGORY_LABELS, COLOR_BY_KEY, COLORS, FIT_LABELS, MATERIAL_BY_KEY, MATERIALS, STYLE_LABELS } from '@shared/taxonomy';
+import { muteInterest, removeImageInterest, resetInterests, setLearning, updateProfile, useUser } from '../lib/store';
+import { topOf, totalSignal, type Dim } from '@shared/interests';
 import { useData } from '../lib/data';
 import { href } from '../lib/router';
-import { toast } from '../components/ui';
+import { Switch, toast } from '../components/ui';
+import { ago } from '../lib/format';
 
 const GENDERS: [Gender, string][] = [['women', 'Damen'], ['men', 'Herren'], ['unisex', 'Unisex'], ['kids', 'Kinder']];
 const TOP_SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
@@ -36,6 +38,8 @@ export function Profile() {
       </div>
 
       <div className="stack" style={{ gap: 18 }}>
+        <LearnedInterests />
+
         <Section title="Für wen?">
           <div className="chips">
             {GENDERS.map(([g, l]) => (
@@ -199,5 +203,76 @@ function SizeRow({ label, sizes, value, onChange }: { label: string; sizes: stri
         ))}
       </div>
     </div>
+  );
+}
+
+const DIM_LABELS: [Dim, string][] = [['brands', 'Marken'], ['cats', 'Kategorien'], ['styles', 'Stile'], ['colors', 'Farben'], ['mats', 'Materialien'], ['shops', 'Shops']];
+
+function LearnedInterests() {
+  const { interests } = useUser();
+  const data = useData();
+  const on = interests?.on ?? true;
+  const total = totalSignal(interests);
+  const label = (dim: Dim, k: string) =>
+    dim === 'cats' ? CATEGORY_LABELS[k as Category] ?? k
+      : dim === 'styles' ? STYLE_LABELS[k as Style] ?? k
+        : dim === 'colors' ? COLOR_BY_KEY[k]?.label ?? k
+          : dim === 'mats' ? MATERIAL_BY_KEY[k]?.label ?? k
+            : dim === 'shops' ? data.shopById[k]?.name ?? k
+              : k;
+  return (
+    <section className="panel">
+      <div className="row between" style={{ marginBottom: 6 }}>
+        <h3 style={{ fontSize: 22 }}>Was Stilkompass über dich gelernt hat</h3>
+        <label className="row small muted" style={{ gap: 8 }}>
+          Automatisch lernen <Switch checked={on} onChange={(v) => { setLearning(v); toast(v ? 'Lernen eingeschaltet' : 'Lernen pausiert'); }} />
+        </label>
+      </div>
+      <p className="small muted" style={{ marginTop: 0 }}>
+        Aus Produkten, die du ansiehst, merkst, beobachtest oder im Shop öffnest, aus deinen Suchen und den Fotos in der KI-Bildsuche. Ältere Signale verblassen nach und nach (Halbwertszeit 30 Tage). Alles bleibt in deinem Browser. Tippe auf ✕, um etwas nicht mehr zu berücksichtigen.
+      </p>
+      {total < 3 && !interests?.img.length ? (
+        <div className="notice">Noch zu wenig gelernt – sieh dir ein paar Produkte an, merke dir Favoriten oder lade ein Foto in der KI-Bildsuche hoch. Deine Empfehlungen werden dann automatisch persönlicher.</div>
+      ) : (
+        <div className="stack" style={{ gap: 12 }}>
+          {DIM_LABELS.map(([dim, title]) => {
+            const top = interests ? topOf(interests, dim, 8) : [];
+            if (!top.length) return null;
+            const max = top[0][1];
+            return (
+              <div key={dim}>
+                <div className="label" style={{ marginBottom: 6 }}>{title}</div>
+                <div className="chips">
+                  {top.map(([k, v]) => (
+                    <button key={k} className="chip soft" title="Nicht mehr berücksichtigen" onClick={() => muteInterest(dim, k)} style={{ opacity: 0.55 + 0.45 * (v / max) }}>
+                      {dim === 'colors' && <span className="swatch" style={{ background: COLOR_BY_KEY[k]?.hex }} />}
+                      {label(dim, k)} <span className="x">✕</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+          {interests && interests.img.length > 0 && (
+            <div>
+              <div className="label" style={{ marginBottom: 6 }}>Deine Bilder ({interests.img.length})</div>
+              <div className="chips">
+                {interests.img.map((im) => (
+                  <button key={im.at} className="chip soft" onClick={() => removeImageInterest(im.at)} title="Entfernen">
+                    📷 {im.label || 'Foto'} · {ago(im.at / 1000)} <span className="x">✕</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {interests && interests.price.w > 2 && (
+            <div className="small muted">Dein übliches Preisniveau: um CHF {Math.round(interests.price.sum / interests.price.w)} pro Teil</div>
+          )}
+          <div className="row">
+            <button className="btn sm ghost" onClick={() => { if (confirm('Alle gelernten Interessen löschen?')) { resetInterests(); toast('Gelernte Interessen gelöscht'); } }}>Alles zurücksetzen</button>
+          </div>
+        </div>
+      )}
+    </section>
   );
 }

@@ -1,6 +1,7 @@
 // Personalisierung: Passung zum Style-Profil, Grössen-Logik, Budget – erklärbar und ohne KI-Kosten.
 import type { Category, Product, StyleProfile } from './types';
-import { MATERIAL_BY_KEY } from './taxonomy';
+import { CATEGORY_LABELS, MATERIAL_BY_KEY } from './taxonomy';
+import { interestMatch, totalSignal, type Interests } from './interests';
 
 export const DEFAULT_PROFILE: StyleProfile = {
   genders: [],
@@ -110,4 +111,19 @@ export function rankValue(p: Product, value: number, match: Match | null, priori
   const m = match ? match.score : 50;
   const fresh = p.drop ? Math.min(8, p.drop / 3) : 0;
   return p.q * w[0] + value * w[1] + m * 0.3 + fresh - (p.qc < 0.35 ? 3 : 0);
+}
+
+/** Personalisierung aktiv, wenn ein Profil gesetzt ist oder genug gelernt wurde */
+export function isPersonalized(profile: StyleProfile, interests?: Interests): boolean {
+  return !profileIsEmpty(profile) || totalSignal(interests) >= 3;
+}
+
+/** Profil (explizit) + gelernte Interessen (implizit) kombiniert */
+export function combinedMatch(p: Product, profile: StyleProfile, interests?: Interests): Match {
+  const m = matchProfile(p, profile);
+  const im = interestMatch(interests, p, { cat: (c) => CATEGORY_LABELS[c as Category] ?? c });
+  const learned = totalSignal(interests) >= 3;
+  if (!learned) return m;
+  const score = profileIsEmpty(profile) ? im.score : Math.round(m.score * 0.6 + im.score * 0.4);
+  return { score, reasons: [...m.reasons, ...im.reasons].slice(0, 3), blocked: m.blocked };
 }

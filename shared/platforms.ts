@@ -4,7 +4,7 @@
 export interface PlatformLink {
   id: string;
   name: string;
-  segment: 'secondhand' | 'new';
+  segment: 'secondhand' | 'new' | 'compare';
   shipsToCH: boolean;
   note: string;
   url: string;
@@ -21,6 +21,16 @@ const enc = encodeURIComponent;
 export function platformLinks({ q, maxPrice }: LinkQuery): PlatformLink[] {
   const query = q.trim() || 'kleidung';
   return [
+    {
+      id: 'google', name: 'Google Shopping', segment: 'compare', shipsToCH: true,
+      note: 'Vergleicht Angebote fast aller Onlineshops, auch solcher ohne öffentlichen Feed. Versand in die Schweiz je Angebot prüfen.',
+      url: `https://www.google.com/search?tbm=shop&hl=de&gl=ch&q=${enc(query)}`,
+    },
+    {
+      id: 'toppreise', name: 'toppreise.ch', segment: 'compare', shipsToCH: true,
+      note: 'Schweizer Preisvergleich mit Schweizer Händlern (Preise in CHF).',
+      url: `https://www.toppreise.ch/produktsuche?q=${enc(query)}`,
+    },
     {
       id: 'ricardo', name: 'Ricardo', segment: 'secondhand', shipsToCH: true,
       note: 'Grösster Schweizer Marktplatz. Tipp: Suchabo auf Ricardo speichern (gratis E-Mail-Alarm).',

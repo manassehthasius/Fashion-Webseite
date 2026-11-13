@@ -237,6 +237,8 @@ export interface UserState {
   searches: SavedSearch[];
   profile: StyleProfile;
   push?: PushSubscriptionJSONLike[];
+  /** Automatisch gelernte Interessen (siehe shared/interests.ts) */
+  interests?: import('./interests').Interests;
 }
 
 export interface PushSubscriptionJSONLike {

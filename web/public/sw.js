@@ -1,5 +1,5 @@
 // Stilkompass Service Worker: Offline-Cache und Web-Push-Benachrichtigungen.
-const VERSION = 'sk-v1';
+const VERSION = 'sk-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png'];
 
 self.addEventListener('install', (e) => {
@@ -40,7 +40,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== location.origin) return; // Bilder & Modelle: Browser-Cache bzw. Transformers.js-Cache
   if (url.pathname.includes('/api/')) return;
   if (url.pathname.includes('/assets/') || url.pathname.includes('/ort/')) return e.respondWith(cacheFirst(req));
-  if (req.mode === 'navigate' || url.pathname.endsWith('.json') || url.pathname.endsWith('/') || url.pathname.endsWith('.html')) return e.respondWith(networkFirst(req));
+  if (req.mode === 'navigate' || url.pathname.endsWith('.json') || url.pathname.endsWith('.bin') || url.pathname.endsWith('/') || url.pathname.endsWith('.html')) return e.respondWith(networkFirst(req));
 });
 
 self.addEventListener('push', (e) => {

@@ -5,10 +5,10 @@ import { landedCost } from '@shared/pricing';
 import { qualityLabel, qualityScore } from '@shared/quality';
 import { CATEGORY_LABELS, COLOR_BY_KEY, CONDITION_LABELS, FIT_LABELS, MATERIAL_BY_KEY, ORIGINS, STYLE_LABELS } from '@shared/taxonomy';
 import { sameProductOffers, similarProducts } from '@shared/similar';
-import { hasMySize, matchProfile, profileSizesFor } from '@shared/personalize';
+import { combinedMatch, hasMySize, profileSizesFor } from '@shared/personalize';
 import { chf, days } from '../lib/format';
 import { href, setParam } from '../lib/router';
-import { getWatch, removeWatch, toggleCompare, toggleFavorite, upsertWatch, useCompare, useUser } from '../lib/store';
+import { getWatch, recordClick, recordView, removeWatch, toggleCompare, toggleFavorite, upsertWatch, useCompare, useUser } from '../lib/store';
 import { Icon } from './Icon';
 import { PriceChart } from './PriceChart';
 import { Panel, QualityRing, Switch, toast } from './ui';
@@ -36,6 +36,7 @@ function ProductDetail({ p }: { p: Item }) {
   const [hist, setHist] = useState<[number, number, number][] | null>(null);
   const [watchOpen, setWatchOpen] = useState(false);
   useEffect(() => {
+    recordView(p);
     loadDetails(p.s).then((d) => setDetails(d[p.id] ?? [[], '']));
     loadHistory().then((h) => setHist(h[p.id] ?? []));
   }, [p.id, p.s]);
@@ -45,7 +46,7 @@ function ProductDetail({ p }: { p: Item }) {
   const offers = useMemo(() => sameProductOffers(p, items), [p, items]);
   const cheaper = useMemo(() => similarProducts(p, items, { cheaper: true, limit: 6, imageSim: imageSimFor(p.id) }), [p, items]);
   const similar = useMemo(() => similarProducts(p, items, { limit: 8, imageSim: imageSimFor(p.id) }), [p, items]);
-  const match = matchProfile(p, user.profile);
+  const match = combinedMatch(p, user.profile, user.interests);
   const mySizes = profileSizesFor(p.cat, user.profile);
   const sizeOk = hasMySize(p, user.profile);
   const fav = user.favorites.includes(p.id);
@@ -86,7 +87,7 @@ function ProductDetail({ p }: { p: Item }) {
         </div>
 
         <div className="actions">
-          <a className="btn primary" href={url} target="_blank" rel="noopener noreferrer">
+          <a className="btn primary" href={url} target="_blank" rel="noopener noreferrer" onClick={() => recordClick(p)}>
             Zum Shop <Icon name="external" size={16} />
           </a>
           <button className="btn" onClick={() => toast(toggleFavorite(p) ? 'Zu Favoriten hinzugefügt' : 'Aus Favoriten entfernt')} aria-label="Favorit">

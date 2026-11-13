@@ -1,7 +1,8 @@
 // Suche, Filter, Sortierung und Facetten im Browser (36’000+ Produkte in wenigen Millisekunden).
 import type { Category, Condition, Gender, SearchFilters, StyleProfile, Style } from '@shared/types';
-import { matchFilters, parseQuery, textMatches, textScore } from '@shared/search';
-import { matchProfile, profileIsEmpty, rankValue } from '@shared/personalize';
+import { buildVocab, groupsMatch, matchFilters, parseQuery, textMatches, textScore, type ParsedQuery, type Vocab } from '@shared/search';
+import { combinedMatch, isPersonalized, rankValue } from '@shared/personalize';
+import type { Interests } from '@shared/interests';
 import type { Item } from './data';
 import { getData } from './data';
 
@@ -24,10 +25,14 @@ export interface QueryInput {
   sort: Sort;
   profile?: StyleProfile;
   personalize?: boolean;
+  interests?: Interests;
 }
 
 export interface QueryResult {
   items: Item[];
+  parsed: ParsedQuery;
+  /** Suche nach einem bestimmten Produkt/Modell (Marke oder Modellbegriffe) → Preisvergleich anzeigen */
+  specific: boolean;
   understood: string[];
   effective: SearchFilters;
   facets: Facets;
@@ -53,10 +58,18 @@ function count<K>(m: Map<K, number>, k: K) {
 }
 const top = <K,>(m: Map<K, number>, n: number): [K, number][] => [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, n);
 
+let vocabCache: { items: Item[]; vocab: Vocab } | null = null;
+export function getVocab(): Vocab {
+  const { items } = getData();
+  if (!vocabCache || vocabCache.items !== items) vocabCache = { items, vocab: buildVocab(items) };
+  return vocabCache.vocab;
+}
+
 export function runQuery(input: QueryInput): QueryResult {
   const t0 = performance.now();
   const { items, shopById } = getData();
-  const pq = parseQuery(input.q);
+  const pq = parseQuery(input.q, input.q.trim() ? getVocab() : undefined);
+  const hasText = pq.text.length > 0 || pq.groups.length > 0 || pq.soft.length > 0;
   // Explizite Filter haben Vorrang vor erkannten Begriffen
   const effective: SearchFilters = { ...pq.filters };
   for (const [k, v] of Object.entries(input.filters)) {
@@ -64,7 +77,7 @@ export function runQuery(input: QueryInput): QueryResult {
     (effective as Record<string, unknown>)[k] = v;
   }
   const profile = input.profile;
-  const usePersonal = !!(input.personalize && profile && !profileIsEmpty(profile));
+  const usePersonal = !!(input.personalize && profile && isPersonalized(profile, input.interests));
   const out: { p: Item; score: number }[] = [];
   const fCat = new Map<Category, number>(), fBrand = new Map<string, number>(), fCol = new Map<string, number>(), fMat = new Map<string, number>();
   const fSty = new Map<Style, number>(), fSize = new Map<string, number>(), fShop = new Map<string, number>(), fG = new Map<Gender, number>(), fCond = new Map<Condition, number>();
@@ -74,9 +87,10 @@ export function runQuery(input: QueryInput): QueryResult {
     const shop = shopById[p.s];
     if (!matchFilters(p, effective, shop)) continue;
     if (pq.text.length && !textMatches(p.h, pq.text)) continue;
+    if (pq.groups.length && !groupsMatch(p, p.h, pq.groups)) continue;
     let match = null;
     if (usePersonal) {
-      match = matchProfile(p, profile!);
+      match = combinedMatch(p, profile!, input.interests);
       if (match.blocked) continue;
     }
     let score = 0;
@@ -88,7 +102,7 @@ export function runQuery(input: QueryInput): QueryResult {
       case 'new': score = p.first; break;
       case 'drop': score = (p.drop ?? 0) * 10 + (p.chfWas ? (1 - p.chf / p.chfWas) * 100 : 0); break;
       default:
-        score = rankValue(p, p.v, match, profile?.priority ?? 'balanced') + (pq.text.length ? textScore(p.h, p.t, p.b, pq.text) * 3 : 0);
+        score = rankValue(p, p.v, match, profile?.priority ?? 'balanced') + (hasText ? textScore(p.h, p.t, p.b, pq.text, pq.soft) * 3 : 0);
     }
     out.push({ p, score });
     count(fCat, p.cat);
@@ -102,8 +116,11 @@ export function runQuery(input: QueryInput): QueryResult {
     if (p.cond) count(fCond, p.cond);
   }
   out.sort((a, b) => b.score - a.score);
+  const specific = !!(effective.brands?.length || pq.text.length || pq.groups.some((g) => !g.fit));
   return {
     items: out.map((x) => x.p),
+    parsed: pq,
+    specific,
     understood: pq.understood,
     effective,
     facets: {

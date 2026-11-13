@@ -227,3 +227,70 @@ describe('Outfits, Personalisierung, Ähnlichkeit', () => {
     expect(l.find((x) => x.id === 'ebay')?.url).toContain('_udhi=200');
   });
 });
+
+import { buildVocab, groupsMatch, haystack } from '../shared/search';
+import { emptyInterests, interestMatch, learnImage, learnProduct, learnSearch, decayed, SIGNAL } from '../shared/interests';
+import { combinedMatch, isPersonalized } from '../shared/personalize';
+
+describe('Produktsuche über alle Shops', () => {
+  const s = shop({ multiBrand: true });
+  const conv = product({ id: 'k:1', b: 'Converse', t: 'Chuck 70 Ox - Black', cat: 'sneakers', col: ['black'], mat: [{ k: 'cotton' }] });
+  const pants = product({ id: 'k:2', b: 'Brand', t: 'Tailored Wide Trousers - Black', cat: 'trousers', col: ['black'], fit: 'relaxed' });
+  const slim = product({ id: 'k:3', b: 'Brand', t: 'Slim Chino - Black', cat: 'trousers', col: ['black'], fit: 'slim' });
+  const vocab = buildVocab([conv, pants, slim].map((p) => ({ b: p.b, h: haystack(p, s) })));
+  it('versteht "breite schwarze Anzughosen"', () => {
+    const q = parseQuery('breite schwarze anzughosen', vocab);
+    expect(q.filters.categories).toEqual(['trousers']);
+    expect(q.filters.colors).toEqual(['black']);
+    expect(q.groups.map((g) => g.label)).toEqual(['weite Passform']);
+    expect(groupsMatch(pants, haystack(pants, s), q.groups)).toBe(true);
+    expect(groupsMatch(slim, haystack(slim, s), q.groups)).toBe(false);
+    expect(q.soft).toContain('tailored');
+  });
+  it('korrigiert Tippfehler und erkennt Marken und Modelle', () => {
+    const q = parseQuery('converser chuck low', vocab);
+    expect(q.corrected).toEqual([['converser', 'converse']]);
+    expect(q.filters.brands).toEqual(['Converse']);
+    expect(groupsMatch(conv, haystack(conv, s), q.groups)).toBe(true); // "Ox" = Low
+  });
+  it('zerlegt deutsche Komposita und erkennt Schuhgrössen', () => {
+    const q = parseQuery('wollmantel damen');
+    expect(q.filters.categories).toEqual(['coat']);
+    expect(q.filters.materials).toEqual(['wool']);
+    const z = parseQuery('lederschuhe braun 43');
+    expect(z.filters.sizes).toEqual(['43']);
+    expect(z.filters.materials).toEqual(['leather']);
+    expect(parseQuery('converse chuck 70').text).toEqual(['converse', '70']); // ohne Wortschatz keine Markenerkennung
+  });
+});
+
+describe('Lernende Interessen', () => {
+  const p = product({ b: 'Sunspel', cat: 'tshirt', col: ['navy'], g: 'men' });
+  it('lernt aus Ansichten, Favoriten und Suchen', () => {
+    let i = emptyInterests();
+    i = learnProduct(i, p, SIGNAL.favorite);
+    i = learnProduct(i, p, SIGNAL.view);
+    i = learnSearch(i, { categories: ['tshirt'], colors: ['navy'] });
+    expect(i.brands.Sunspel).toBe(5);
+    expect(i.seen[0]).toBe(p.id);
+    const fit = interestMatch(i, p);
+    const other = interestMatch(i, product({ b: 'Other', cat: 'dress', col: ['red'], g: 'women' }));
+    expect(fit.score).toBeGreaterThan(other.score + 30);
+    expect(isPersonalized(DEFAULT_PROFILE, i)).toBe(true);
+    expect(combinedMatch(p, DEFAULT_PROFILE, i).reasons.length).toBeGreaterThan(0);
+  });
+  it('vergisst langsam und respektiert Pausieren', () => {
+    const i = learnProduct(emptyInterests(), p, 4);
+    const later = decayed({ ...i, updatedAt: Date.now() - 30 * 86400000 });
+    expect(later.brands.Sunspel).toBeCloseTo(2, 1);
+    const off = learnProduct({ ...emptyInterests(), on: false }, p, 4);
+    expect(off.brands).toEqual({});
+  });
+  it('speichert Bild-Fingerabdrücke (max. 8), keine Fotos', () => {
+    let i = emptyInterests();
+    for (let k = 0; k < 10; k++) i = learnImage(i, new Float32Array([0.1234567, 0.2]), { cat: 'knit' });
+    expect(i.img.length).toBe(8);
+    expect(i.img[0].vec[0]).toBe(0.123);
+    expect(i.cats.knit).toBeGreaterThan(0);
+  });
+});
