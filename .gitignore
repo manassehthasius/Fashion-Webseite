@@ -7,3 +7,4 @@ state/
 *.log
 web/public/ort/
 GITHUB-SECRETS.txt
+screenshots/

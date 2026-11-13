@@ -57,9 +57,12 @@ export function normalizeProduct(raw: ShopifyProduct, shop: Shop): NormProduct |
 
   const genderField = body.match(/\b(?:gender|geschlecht)\s*:\s*([a-zäöü']+)/i)?.[1] ?? '';
   const g = classifyGender([genderField, clsTitle, raw.product_type, raw.handle, tags.join(' ')], shop.gender ?? 'unisex');
-  const colorText = sizes.colorValues.length ? sizes.colorValues.join(' / ') : `${title.split(/\s[-–|]\s/).slice(1).join(' ') || title} ${tags.filter((t) => t.length < 25).join(' ')}`;
-  let col = extractColors(colorText);
-  if (!col.length) col = extractColors(`${title} ${body.slice(0, 200)}`);
+  // Farbe: Varianten-Option > Titel > Tags > Beschreibung (Tags enthalten oft fremde Farben, z. B. "all black" als Stil-Schlagwort)
+  let col = sizes.colorValues.length ? extractColors(sizes.colorValues.join(' / ')) : [];
+  if (!col.length) col = extractColors(title.split(/\s[-–|]\s/).slice(1).join(' '));
+  if (!col.length) col = extractColors(title);
+  if (!col.length) col = extractColors(tags.filter((t) => t.length < 25).join(' '));
+  if (!col.length) col = extractColors(body.slice(0, 200));
   const mat = extractMaterials(title, body, tags);
   const fx = extractFeatures(title, body, tags);
   const seg = shop.segment;
