@@ -1,0 +1,194 @@
+{
+  "generatedAt": "2026-11-14T15:11:59.903Z",
+  "durationS": 235,
+  "products": 64092,
+  "new": 53092,
+  "secondhand": 11000,
+  "shops": 127,
+  "failed": [
+    {
+      "id": "dailypaper",
+      "error": "Feed leer oder nicht erreichbar (2 Fehler)"
+    }
+  ],
+  "fx": {
+    "source": "shopify",
+    "date": "2026-11-14"
+  },
+  "catalogBytes": 26569996,
+  "historyBytes": 4381926,
+  "deep": 233266,
+  "deepBytes": 97593754,
+  "discovered": [
+    {
+      "id": "x-newbalance",
+      "name": "New Balance",
+      "at": "2026-11-13T18:27:59.158Z"
+    },
+    {
+      "id": "x-byparra",
+      "name": "By Parra",
+      "at": "2026-11-13T21:18:07.946Z"
+    },
+    {
+      "id": "x-rickowens",
+      "name": "Rick Owens",
+      "at": "2026-11-13T22:14:32.694Z"
+    },
+    {
+      "id": "x-karhu",
+      "name": "Karhu",
+      "at": "2026-11-13T22:14:34.314Z"
+    },
+    {
+      "id": "x-arteantwerp",
+      "name": "Arte Antwerp",
+      "at": "2026-11-13T23:13:47.063Z"
+    },
+    {
+      "id": "x-savekhaki",
+      "name": "Save Khaki",
+      "at": "2026-11-14T00:03:49.343Z"
+    },
+    {
+      "id": "x-lemaire",
+      "name": "Lemaire",
+      "at": "2026-11-14T00:59:02.954Z"
+    },
+    {
+      "id": "x-damsonmadder",
+      "name": "Damson Madder",
+      "at": "2026-11-14T01:00:46.524Z"
+    },
+    {
+      "id": "x-crocs",
+      "name": "Crocs",
+      "at": "2026-11-14T01:57:29.941Z"
+    },
+    {
+      "id": "x-anonymousism",
+      "name": "Anonymous Ism",
+      "at": "2026-11-14T02:43:40.406Z"
+    },
+    {
+      "id": "x-estudioniksen",
+      "name": "Estudio Niksen",
+      "at": "2026-11-14T02:43:41.704Z"
+    },
+    {
+      "id": "x-alexanderwang",
+      "name": "Alexander Wang",
+      "at": "2026-11-14T02:45:40.705Z"
+    },
+    {
+      "id": "x-gitmanvintage",
+      "name": "Gitman Vintage",
+      "at": "2026-11-14T03:43:26.606Z"
+    },
+    {
+      "id": "x-frankiesbikinis",
+      "name": "Frankies Bikinis",
+      "at": "2026-11-14T03:45:27.905Z"
+    },
+    {
+      "id": "x-americantrench",
+      "name": "American Trench",
+      "at": "2026-11-14T03:45:29.256Z"
+    },
+    {
+      "id": "x-studionicholson",
+      "name": "Studio Nicholson",
+      "at": "2026-11-14T04:46:43.594Z"
+    },
+    {
+      "id": "x-apc",
+      "name": "A.P.C.",
+      "at": "2026-11-14T04:47:04.570Z"
+    },
+    {
+      "id": "x-awakeny",
+      "name": "Awake NY",
+      "at": "2026-11-14T05:43:28.887Z"
+    },
+    {
+      "id": "x-roa",
+      "name": "ROA",
+      "at": "2026-11-14T05:44:17.840Z"
+    },
+    {
+      "id": "x-diemme",
+      "name": "Diemme",
+      "at": "2026-11-14T06:47:51.385Z"
+    },
+    {
+      "id": "x-wastedparis",
+      "name": "Wasted Paris",
+      "at": "2026-11-14T06:47:56.465Z"
+    },
+    {
+      "id": "x-agolde",
+      "name": "Agolde",
+      "at": "2026-11-14T07:55:46.191Z"
+    },
+    {
+      "id": "x-theattico",
+      "name": "The Attico",
+      "at": "2026-11-14T07:56:04.919Z"
+    },
+    {
+      "id": "x-baserange",
+      "name": "Baserange",
+      "at": "2026-11-14T08:44:42.653Z"
+    },
+    {
+      "id": "x-justineclenquet",
+      "name": "Justine Clenquet",
+      "at": "2026-11-14T08:45:24.235Z"
+    },
+    {
+      "id": "x-gimaguas",
+      "name": "Gimaguas",
+      "at": "2026-11-14T09:40:08.853Z"
+    },
+    {
+      "id": "x-orlebarbrown",
+      "name": "Orlebar Brown",
+      "at": "2026-11-14T09:40:17.715Z"
+    },
+    {
+      "id": "x-grayers",
+      "name": "Grayers",
+      "at": "2026-11-14T09:40:40.672Z"
+    },
+    {
+      "id": "x-lfmarkey",
+      "name": "LF Markey",
+      "at": "2026-11-14T14:17:09.817Z"
+    },
+    {
+      "id": "x-palsportinggoods",
+      "name": "PAL Sporting Goods",
+      "at": "2026-11-14T14:17:23.274Z"
+    },
+    {
+      "id": "x-eliou",
+      "name": "Eliou",
+      "at": "2026-11-14T14:17:56.303Z"
+    },
+    {
+      "id": "x-storymfg",
+      "name": "STORY mfg.",
+      "at": "2026-11-14T15:11:09.773Z"
+    },
+    {
+      "id": "x-ayamuse",
+      "name": "Aya Muse",
+      "at": "2026-11-14T15:11:54.060Z"
+    },
+    {
+      "id": "x-adriancashmere",
+      "name": "Adrian Cashmere",
+      "at": "2026-11-14T15:11:59.624Z"
+    }
+  ]
+}
