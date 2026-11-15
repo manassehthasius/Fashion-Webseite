@@ -232,12 +232,14 @@ export async function runDiscovery(o: {
 }
 
 /** Entdeckte Shops entfernen, die nicht mehr in die Schweiz liefern oder seit 7 Tagen nicht erreichbar sind */
-export function pruneDiscovery(st: DiscoveryState, health: Record<string, { shipsToCH?: boolean; lastOkAt?: string }>, now: number): string[] {
+export function pruneDiscovery(st: DiscoveryState, health: Record<string, { shipsToCH?: boolean; lastOkAt?: string; products?: number }>, now: number): string[] {
   const removed: string[] = [];
   st.shops = st.shops.filter((e) => {
     const h = health[e.shop.id];
     const lastOk = h?.lastOkAt ? Date.parse(h.lastOkAt) / 1000 : Date.parse(e.shop.discovered?.at ?? '') / 1000;
-    const bad = h?.shipsToCH === false || (lastOk && now - lastOk > 7 * DAY);
+    // kaum passende Teile (Herren in meinen Grössen) → wieder entfernen
+    const few = !!h?.lastOkAt && (h.products ?? 0) < 8;
+    const bad = h?.shipsToCH === false || (lastOk && now - lastOk > 7 * DAY) || few;
     if (bad) {
       removed.push(e.shop.name);
       st.tried[slug(e.brand)] = { at: now, ok: false, reason: 'entfernt: nicht mehr erreichbar oder keine Lieferung in die Schweiz' };
