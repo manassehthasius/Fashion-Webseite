@@ -10,6 +10,7 @@ export const VAT: Record<string, number> = { DE: 0.19, DK: 0.25, NL: 0.21, GB: 0
 export const est = (currency: string, cost: number, freeFrom: number | undefined, days: [number, number], note?: string, carrier?: 'post' | 'courier') => ({ currency, cost, freeFrom, days, verified: false, note, carrier });
 const ver = (currency: string, cost: number, freeFrom: number | undefined, days: [number, number], note?: string, carrier?: 'post' | 'courier') => ({ currency, cost, freeFrom, days, verified: true, note, carrier });
 
+// Nur-Damen-Shops entfernt (Rouje, Paloma Wool, Baum und Pferdgarten, Polène, RIXO, Never Fully Dressed, Nobody's Child) – Katalog ist auf Herren ausgerichtet (shared/owner.ts).
 const RAW: S[] = [
   // ---------- Schweiz ----------
   { id: 'nikin', name: 'NIKIN', domain: 'nikin.com', country: 'CH', currency: 'CHF', duty: 'domestic', homeVat: VAT.CH, tier: 3, styles: ['casual', 'minimal', 'outdoor'], gender: 'unisex', shipping: est('CHF', 7.9, 100, [1, 3]), certifications: [], perks: ['Pflanzt einen Baum pro Produkt'] },
@@ -32,9 +33,7 @@ const RAW: S[] = [
   { id: 'thinkingmu', name: 'Thinking MU', domain: 'thinkingmu.com', country: 'ES', currency: 'EUR', duty: 'dap', homeVat: VAT.ES, tier: 3, styles: ['casual', 'boho'], shipping: est('EUR', 15, 150, [3, 7]), certifications: ['gots'] },
   { id: 'madsnorgaard', name: 'Mads Nørgaard', domain: 'madsnorgaard.com', country: 'DK', currency: 'EUR', duty: 'dap', homeVat: VAT.DK, tier: 3, styles: ['casual', 'classic'], shipping: ver('CHF', 20, undefined, [3, 5], 'GLS; Zoll/MWST nicht enthalten') },
   { id: 'hast', name: 'Hast', domain: 'hast.fr', country: 'FR', currency: 'EUR', duty: 'dap', homeVat: VAT.FR, tier: 4, styles: ['classic', 'smart'], gender: 'men', shipping: ver('CHF', 9, 250, [3, 5]) },
-  { id: 'rouje', name: 'Rouje', domain: 'rouje.com', country: 'FR', currency: 'EUR', duty: 'dap', homeVat: VAT.FR, tier: 3, styles: ['elegant', 'boho'], gender: 'women', shipping: est('EUR', 15, undefined, [2, 4], 'UPS') },
   { id: 'bonnegueule', name: 'BonneGueule', domain: 'bonnegueule.fr', country: 'FR', currency: 'EUR', duty: 'dap', homeVat: VAT.FR, tier: 4, styles: ['classic', 'smart'], gender: 'men', shipping: ver('EUR', 15, undefined, [3, 8], 'Colissimo → Post CH', 'post') },
-  { id: 'palomawool', name: 'Paloma Wool', domain: 'palomawool.com', country: 'ES', currency: 'EUR', duty: 'dap', homeVat: VAT.ES, tier: 3, styles: ['avantgarde', 'minimal'], gender: 'women', shipping: ver('EUR', 12, undefined, [2, 6], 'DHL; Zoll nicht enthalten', 'courier') },
   { id: 'armorlux', name: 'Armor-Lux', domain: 'armorlux.com', country: 'FR', currency: 'EUR', duty: 'dap', homeVat: VAT.FR, tier: 3, styles: ['classic', 'preppy'], shipping: est('EUR', 15, 150, [3, 7]), cap: 800 },
   { id: 'portugueseflannel', name: 'Portuguese Flannel', domain: 'portugueseflannel.com', country: 'PT', currency: 'EUR', duty: 'dap', homeVat: VAT.PT, tier: 4, styles: ['casual', 'classic'], gender: 'men', shipping: est('EUR', 15, 200, [3, 7]) },
   { id: 'norseprojects', name: 'Norse Projects', domain: 'norseprojects.com', country: 'DK', currency: 'DKK', duty: 'dap', homeVat: VAT.DK, tier: 4, styles: ['minimal', 'outdoor', 'classic'], shipping: ver('EUR', 20, 350, [1, 3], 'DHL Express (Europa-Tarif)', 'courier') },
@@ -85,7 +84,6 @@ const RAW: S[] = [
   { id: 'lyleandscott', name: 'Lyle & Scott', domain: 'lyleandscott.com', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 3, styles: ['preppy', 'casual'], gender: 'men', shipping: est('GBP', 15, 150, [3, 7]) },
   { id: 'farah', name: 'Farah', domain: 'farah.co.uk', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 3, styles: ['classic', 'casual'], gender: 'men', shipping: est('GBP', 15, 150, [3, 7]) },
   { id: 'rains', name: 'Rains', domain: 'rains.com', country: 'DK', currency: 'EUR', duty: 'dap', homeVat: VAT.DK, tier: 3, styles: ['minimal', 'outdoor'], shipping: est('EUR', 10, 100, [2, 5]) },
-  { id: 'baumundpferdgarten', name: 'Baum und Pferdgarten', domain: 'baumundpferdgarten.com', country: 'DK', currency: 'EUR', duty: 'dap', homeVat: VAT.DK, tier: 3, styles: ['elegant', 'boho'], gender: 'women', shipping: est('EUR', 15, 200, [3, 6]) },
   { id: 'eytys', name: 'Eytys', domain: 'eytys.com', country: 'SE', currency: 'SEK', duty: 'dap', homeVat: VAT.SE, tier: 3, styles: ['streetwear', 'minimal'], shipping: est('EUR', 15, 200, [3, 6]) },
   { id: 'soulland', name: 'Soulland', domain: 'soulland.com', country: 'DK', currency: 'EUR', duty: 'dap', homeVat: VAT.DK, tier: 3, styles: ['streetwear', 'casual'], shipping: est('EUR', 15, 200, [3, 6]) },
   { id: 'fillingpieces', name: 'Filling Pieces', domain: 'fillingpieces.com', country: 'NL', currency: 'EUR', duty: 'dap', homeVat: VAT.NL, tier: 3, styles: ['streetwear', 'minimal'], shipping: est('EUR', 15, 200, [3, 6]) },
@@ -97,13 +95,9 @@ const RAW: S[] = [
   { id: 'mela', name: 'MELA', domain: 'melawear.de', country: 'DE', currency: 'EUR', duty: 'dap', homeVat: VAT.DE, tier: 3, styles: ['minimal', 'casual'], shipping: est('EUR', 12, 100, [3, 6]), certifications: ['gots', 'fairtrade'] },
   { id: 'jackwolfskin', name: 'Jack Wolfskin', domain: 'jackwolfskin.com', country: 'DE', currency: 'EUR', duty: 'dap', homeVat: VAT.DE, tier: 3, styles: ['outdoor'], shipping: est('EUR', 10, 100, [3, 6]) },
   { id: 'jott', name: 'JOTT', domain: 'jott.com', country: 'FR', currency: 'EUR', duty: 'dap', homeVat: VAT.FR, tier: 3, styles: ['casual', 'outdoor'], shipping: est('EUR', 15, 150, [3, 6]) },
-  { id: 'polene', name: 'Polène', domain: 'polene-paris.com', country: 'FR', currency: 'EUR', duty: 'dap', homeVat: VAT.FR, tier: 4, styles: ['elegant', 'minimal'], gender: 'women', shipping: est('EUR', 15, undefined, [3, 6]) },
   { id: 'silbon', name: 'Silbon', domain: 'silbonshop.com', country: 'ES', currency: 'EUR', duty: 'dap', homeVat: VAT.ES, tier: 3, styles: ['smart', 'classic'], gender: 'men', shipping: est('EUR', 15, 150, [3, 7]) },
   { id: 'kappa', name: 'Kappa', domain: 'kappa.com', country: 'IT', currency: 'EUR', duty: 'dap', homeVat: VAT.IT, tier: 2, styles: ['sporty', 'streetwear'], shipping: est('EUR', 15, 100, [3, 7]) },
   { id: 'makia', name: 'Makia', domain: 'makia.com', country: 'FI', currency: 'EUR', duty: 'dap', homeVat: 0.255, tier: 3, styles: ['workwear', 'casual'], shipping: est('EUR', 15, 150, [3, 7]) },
-  { id: 'rixo', name: 'RIXO', domain: 'rixo.co.uk', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 3, styles: ['elegant', 'boho'], gender: 'women', shipping: est('GBP', 15, 200, [3, 7]) },
-  { id: 'neverfullydressed', name: 'Never Fully Dressed', domain: 'neverfullydressed.co.uk', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 2, styles: ['boho', 'casual'], gender: 'women', shipping: est('GBP', 15, 150, [3, 7]) },
-  { id: 'nobodyschild', name: "Nobody's Child", domain: 'nobodyschild.com', country: 'GB', currency: 'GBP', duty: 'dap', homeVat: VAT.GB, tier: 2, styles: ['casual', 'boho'], gender: 'women', shipping: est('GBP', 15, 150, [3, 7]) },
   { id: 'noah', name: 'Noah', domain: 'noahny.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 4, styles: ['preppy', 'streetwear'], shipping: est('USD', 30, undefined, [5, 10]) },
   { id: 'huf', name: 'HUF', domain: 'hufworldwide.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 2, styles: ['streetwear'], shipping: est('USD', 30, undefined, [5, 10]) },
   { id: 'ripndip', name: 'RIPNDIP', domain: 'ripndip.com', country: 'US', currency: 'USD', duty: 'dap', homeVat: VAT.US, tier: 2, styles: ['streetwear'], shipping: est('USD', 30, undefined, [5, 10]) },
@@ -146,9 +140,10 @@ export const SHOPS: Shop[] = RAW.map((s) => ({
   segment: s.segment ?? 'new',
   // Annahme: EU/UK-Shops ziehen bei Lieferung in die Schweiz ihre MWST ab (Export ist MWST-frei)
   exportVatRemoved: s.exportVatRemoved ?? (s.duty === 'dap' && s.homeVat > 0),
-  cap: s.cap ?? 600,
+  cap: s.cap ?? 800,
   // Neueste Produkte zuerst: so viele Feed-Seiten, wie für das Katalog-Limit nötig (+1 Reserve für Nicht-Kleidung)
-  maxPages: s.maxPages ?? Math.ceil((s.cap ?? 600) / 250) + 1,
+  // (+2 Reserve: Damen, Kinder und fremde Grössen werden herausgefiltert, siehe shared/owner.ts)
+  maxPages: s.maxPages ?? Math.ceil((s.cap ?? 800) / 250) + 2,
 }));
 
 export const SHOP_BY_ID = Object.fromEntries(SHOPS.map((s) => [s.id, s]));

@@ -7,6 +7,7 @@ import { haystack } from '@shared/search';
 import { valueScore } from '@shared/quality';
 import { packImg } from '@shared/media';
 import { stripHtml } from '@shared/text';
+import { ownerWants } from '@shared/owner';
 
 /** dp = aus dem Gesamtsortiment (ältere Feed-Seiten, 1× täglich aktualisiert, ohne Preisverlauf) */
 export type Item = Product & { h: string; v: number; dp?: 1 };
@@ -80,7 +81,7 @@ export async function loadCatalog(force = false) {
     }
     const catMedian: Partial<Record<Category, number>> = {};
     for (const [c, arr] of byCat) catMedian[c] = median(arr);
-    const items: Item[] = cat.products.map((p) => ({ ...p, h: haystack(p, shopById[p.s]), v: valueScore(p.q, p.tot, catMedian[p.cat] ?? p.tot) }));
+    const items: Item[] = cat.products.filter(ownerWants).map((p) => ({ ...p, h: haystack(p, shopById[p.s]), v: valueScore(p.q, p.tot, catMedian[p.cat] ?? p.tot) }));
     const brandCount = new Map<string, number>();
     for (const p of items) brandCount.set(p.b, (brandCount.get(p.b) ?? 0) + 1);
     const brands = [...brandCount.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
@@ -166,7 +167,7 @@ async function loadGroup(g: string, idx: DeepIndex): Promise<void> {
     if (fx) {
       for (const row of packed.rows) {
         const p = unpackProduct(row, shopById, fx);
-        if (!p || byId.has(p.id)) continue;
+        if (!p || byId.has(p.id) || !ownerWants(p)) continue;
         add.push({ ...p, h: haystack(p, shopById[p.s]), v: valueScore(p.q, p.tot, catMedian[p.cat] ?? p.tot), dp: 1 });
       }
     }

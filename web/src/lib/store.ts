@@ -2,6 +2,7 @@
 import { useSyncExternalStore } from 'react';
 import type { Product, SavedSearch, SearchFilters, StyleProfile, UserState, WatchItem } from '@shared/types';
 import { DEFAULT_PROFILE } from '@shared/personalize';
+import { OWNER, OWNER_PROFILE } from '@shared/owner';
 import { uid } from './format';
 import { rememberDeep } from './data';
 import { emptyInterests, learnImage, learnProduct, learnSearch, SIGNAL, type Dim, type Interests } from '@shared/interests';
@@ -10,7 +11,7 @@ const KEY = 'stilkompass:user:v1';
 const COMPARE_KEY = 'stilkompass:compare:v1';
 
 function initial(): UserState {
-  return { v: 1, updatedAt: 0, favorites: [], favSnapshots: {}, watch: [], searches: [], profile: { ...DEFAULT_PROFILE } };
+  return { v: 1, updatedAt: 0, favorites: [], favSnapshots: {}, watch: [], searches: [], profile: { ...OWNER_PROFILE, ownerV: OWNER.v } };
 }
 
 function load(): UserState {
@@ -18,7 +19,10 @@ function load(): UserState {
     const raw = localStorage.getItem(KEY);
     if (!raw) return initial();
     const s = JSON.parse(raw) as UserState;
-    return { ...initial(), ...s, profile: { ...DEFAULT_PROFILE, ...s.profile } };
+    let profile = { ...DEFAULT_PROFILE, ...s.profile };
+    // Besitzer-Einstellungen (Herren, Grössen, Stil) einmalig übernehmen
+    if (profile.ownerV !== OWNER.v) profile = { ...profile, genders: OWNER_PROFILE.genders, sizes: OWNER_PROFILE.sizes, styles: [...new Set([...profile.styles, ...OWNER_PROFILE.styles])], ownerV: OWNER.v };
+    return { ...initial(), ...s, profile };
   } catch {
     return initial();
   }

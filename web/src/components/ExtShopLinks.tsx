@@ -9,7 +9,9 @@ export function ExtShopLinks({ query, title = 'Bei deinen Lieblingsshops suchen'
   const { profile } = useUser();
   const [all, setAll] = useState(false);
   const fav = (profile.extShops?.length ? profile.extShops : DEFAULT_EXT_SHOPS).map((id) => EXT_BY_ID[id]).filter(Boolean);
-  const q = query.trim();
+  // Katalog ist auf Herren ausgerichtet → auch bei Zalando & Co. Herren suchen
+  const base = query.trim();
+  const q = base && !/\b(herren|men|männer|mann)\b/i.test(base) ? `${base} Herren` : base;
   if (!q) return null;
   return (
     <div className="stack" style={{ gap: 8 }}>

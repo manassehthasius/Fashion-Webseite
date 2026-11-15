@@ -57,7 +57,7 @@ export function Filters({ filters, onChange, facets, segment }: { filters: Searc
       <div className="fgroup">
         <div className="ftitle">Für</div>
         <div className="fbody chips" style={{ flexDirection: 'row' }}>
-          {(['women', 'men', 'unisex', 'kids'] as Gender[]).map((g) => (
+          {(['men', 'unisex'] as Gender[]).map((g) => (
             <button key={g} className={`chip${has('genders', g) ? ' on' : ''}`} onClick={() => toggle('genders', g)}>
               {GENDER_LABELS[g]}
             </button>

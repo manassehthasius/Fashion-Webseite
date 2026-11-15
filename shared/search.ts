@@ -1,5 +1,7 @@
 // Intelligente Suche ohne KI-Kosten: versteht "schwarzer merino pullover herren unter 150 grösse m".
 // Wird in der App (Ranking) und in der Engine (gespeicherte Suchen → Alarme) identisch verwendet.
+import { offeredIn } from './sizes';
+import { SIZE_GROUP } from './personalize';
 import type { Category, Condition, Gender, Product, SearchFilters, Shop, Style } from './types';
 import { CATEGORY_KEYWORDS, CATEGORY_LABELS, COLORS, CONDITION_LABELS, MATERIALS, STYLE_KEYWORDS, STYLE_LABELS, MATERIAL_BY_KEY, COLOR_BY_KEY } from './taxonomy';
 import { fold, hasWord, norm, wordRegex } from './text';
@@ -481,7 +483,11 @@ export function matchFilters(p: Product, f: SearchFilters, shop: Shop | undefine
   if (f.colors?.length && !p.col.some((c) => f.colors!.includes(c))) return false;
   if (f.materials?.length && !materialMatches(p, f.materials)) return false;
   if (f.styles?.length && !p.st.some((s) => f.styles!.includes(s))) return false;
-  if (f.sizes?.length && !p.sz.some((s) => f.sizes!.some((w) => w.toUpperCase() === s.toUpperCase()))) return false;
+  if (f.sizes?.length) {
+    const g = SIZE_GROUP[p.cat];
+    const exact = p.sz.some((s) => f.sizes!.some((w) => w.toUpperCase() === s.toUpperCase()));
+    if (!exact && !(g && offeredIn(p.sz, g, f.sizes, p.cat))) return false;
+  }
   if (f.shops?.length && !f.shops.includes(p.s)) return false;
   if (f.conditions?.length && !(p.cond && f.conditions.includes(p.cond))) return false;
   if (f.minPrice !== undefined && p.tot < f.minPrice) return false;

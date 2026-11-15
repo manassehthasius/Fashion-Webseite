@@ -193,7 +193,7 @@ export default function ImageSearch() {
             <div className="field">
               <label>Für</label>
               <select className="input" value={gender} onChange={(e) => setGender(e.target.value as Gender | '')}>
-                <option value="">alle</option><option value="women">Damen</option><option value="men">Herren</option><option value="kids">Kinder</option>
+                <option value="men">Herren</option><option value="">Herren & Unisex</option>
               </select>
             </div>
             <div className="field">

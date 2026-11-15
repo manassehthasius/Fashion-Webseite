@@ -6,6 +6,10 @@ Kostenlose, werbefreie Web-App, die hochwertige Kleidung zum **besten Gesamtprei
 - **Echte Daten:** öffentliche Produkt-Feeds der Shops, alle 30 Minuten aktualisiert, auch wenn die Seite geschlossen ist.
 - **Privat:** Favoriten, Watchlist und Profil bleiben in deinem Browser. Für Hintergrund-Alarme werden sie optional Ende-zu-Ende-verschlüsselt synchronisiert.
 
+## Persönlich: nur Herren in meinen Grössen
+
+Diese Instanz sammelt nur Herren- und Unisex-Artikel, die in meinen Grössen angeboten werden (Oberteile S/M, Hosen W30/W32 bzw. 46/48, Schuhe EU 41/42), mit einem Stil-Mix aus Streetwear, Smart, Minimal und Workwear. Dadurch passen pro Shop deutlich mehr relevante Teile in den Katalog. Ändern: `shared/owner.ts` anpassen und pushen (Version `v` erhöhen, damit die App die neuen Werte ins Profil übernimmt). Der Grössen-Abgleich (`shared/sizes.ts`) versteht die Schreibweisen der Shops („30 / 32“, „W32L32“, „ADULT | M“, „41 1/3“, „UK8“ …).
+
 ## Funktionen
 
 | Bereich | Was es kann |

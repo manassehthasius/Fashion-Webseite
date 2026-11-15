@@ -9,7 +9,7 @@ import { DEFAULT_EXT_SHOPS, EXT_GROUPS, EXT_SHOPS } from '@shared/mainstream';
 import { Switch, toast } from '../components/ui';
 import { ago } from '../lib/format';
 
-const GENDERS: [Gender, string][] = [['women', 'Damen'], ['men', 'Herren'], ['unisex', 'Unisex'], ['kids', 'Kinder']];
+const GENDERS: [Gender, string][] = [['men', 'Herren'], ['unisex', 'Unisex']];
 const TOP_SIZES = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 const BOTTOM_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '26', '27', '28', '29', '30', '31', '32', '33', '34', '36', '38', '40', '42', '44', '46', '48', '50', '52'];
 const SHOE_SIZES = ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '6', '7', '8', '9', '10', '11', '12'];

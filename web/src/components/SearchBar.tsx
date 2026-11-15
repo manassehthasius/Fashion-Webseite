@@ -4,7 +4,7 @@ import { Icon } from './Icon';
 const EXAMPLES = [
   'Merino Pullover Herren unter 150',
   'Leinenhemd weiss',
-  'Wollmantel Damen hochwertig',
+  'Wollmantel Herren hochwertig',
   'Selvedge Jeans',
   'Kaschmir Schal',
   'Lederstiefel braun Grösse 43',

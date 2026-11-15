@@ -6,6 +6,7 @@ import { fetchMeta, fetchPages, fetchProduct, fetchShopifyFx, detectChMarket, pr
 import { loadDeepRows, runDeep } from './deep';
 import { discoveredShops, loadDiscovery, pruneDiscovery, runDiscovery } from './discover';
 import { normalizeProduct, type NormProduct } from './normalize';
+import { ownerWants } from '../shared/owner';
 import { enrich, pruneState } from './build';
 import { loadCatalog, loadHistory, loadState, paths, writeJson, type EngineState } from './store';
 import { packCatalog } from '../shared/catalog';
@@ -79,7 +80,8 @@ async function crawlShop(base: Shop, fx: FxRates, state: EngineState): Promise<C
       res = await fetchPages(shop.domain, pages, '');
     }
     if (!res.products.length) return { shop, products: [], ok: false, error: `Feed leer oder nicht erreichbar (${res.failed} Fehler)` };
-    const normalized = res.products.map((p) => normalizeProduct(p, shop)).filter((p): p is NormProduct => !!p);
+    // Nur persönlich passende Artikel (Herren/Unisex in meinen Grössen, siehe shared/owner.ts)
+    const normalized = res.products.map((p) => normalizeProduct(p, shop)).filter((p): p is NormProduct => !!p && ownerWants(p));
     normalized.sort((a, b) => b.published - a.published);
     const products = normalized.slice(0, shop.cap);
     const overflow = normalized.slice(shop.cap);
@@ -193,7 +195,7 @@ export async function runUpdate(): Promise<{ catalog: Catalog; prev: Catalog | n
   const removed = pruneDiscovery(discovery, state.shops, now);
   if (removed.length) log(`Shop-Entdeckung: entfernt ${removed.join(', ')}`);
   const segOf = new Map(known.map((s) => [s.id, s.segment]));
-  const deepLite = [...deep.rows.values()].map((r) => ({ b: String(r[3]), s: String(r[1]), tot: Number(r[8]), q: Number(r[17] ?? 0), st: (typeof r[19] === 'string' && r[19] ? r[19].split(',') : []) as Product['st'], seg: segOf.get(String(r[1])) ?? 'new' }));
+  const deepLite = [...deep.rows.values()].map((r) => ({ g: r[10] as Product['g'], b: String(r[3]), s: String(r[1]), tot: Number(r[8]), q: Number(r[17] ?? 0), st: (typeof r[19] === 'string' && r[19] ? r[19].split(',') : []) as Product['st'], seg: segOf.get(String(r[1])) ?? 'new' }));
   const disc = await runDiscovery({
     products: [...products, ...deepLite],
     shops: known,

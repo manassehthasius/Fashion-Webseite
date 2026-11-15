@@ -2,6 +2,7 @@
 import type { Category, Product, StyleProfile } from './types';
 import { CATEGORY_LABELS, MATERIAL_BY_KEY } from './taxonomy';
 import { interestMatch, totalSignal, type Interests } from './interests';
+import { offeredIn } from './sizes';
 
 export const DEFAULT_PROFILE: StyleProfile = {
   genders: [],
@@ -43,7 +44,10 @@ export function hasMySize(p: Product, profile: StyleProfile): boolean | null {
   const mine = profileSizesFor(p.cat, profile);
   if (!mine.length || !p.sza.length) return null;
   if (p.sza.length === 1 && p.sza[0] === 'ONE SIZE') return p.av;
-  return p.sz.some((s) => mine.includes(s.toUpperCase()));
+  // versteht alle Schreibweisen ("30 / 32", "ADULT | M", "41 1/3", "UK8" …)
+  const offered = offeredIn(p.sza, SIZE_GROUP[p.cat]!, mine, p.cat);
+  if (offered === null) return null;
+  return offeredIn(p.sz, SIZE_GROUP[p.cat]!, mine, p.cat) === true;
 }
 
 export function budgetFor(cat: Category, profile: StyleProfile): number | undefined {

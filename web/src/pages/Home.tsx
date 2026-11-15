@@ -9,6 +9,7 @@ import { combinedMatch, isPersonalized, rankValue, type Match } from '@shared/pe
 import { totalSignal } from '@shared/interests';
 import { getEmbIndex, loadEmbIndex, nearest, vectorOf } from '../lib/clipIndex';
 import { ago } from '../lib/format';
+import { OWNER } from '@shared/owner';
 
 function topBy(items: Item[], score: (p: Item) => number, n = 16, perShop = 3): Item[] {
   const sorted = items.map((p) => ({ p, s: score(p) })).filter((x) => Number.isFinite(x.s)).sort((a, b) => b.s - a.s);
@@ -89,9 +90,12 @@ export function Home() {
           Zum <em>besten Gesamtpreis</em>.
         </h1>
         <p className="hero-sub">
-          Neue Mode und Secondhand aus {data.shops.length || '50+'} geprüften Shops mit Lieferung in die Schweiz. Mit echtem Gesamtpreis inkl. Versand, MWST und Verzollung, Qualitätsscore und Preisalarmen.
+          Herrenmode neu und Secondhand aus {data.shops.length || '50+'} geprüften Shops mit Lieferung in die Schweiz. Mit echtem Gesamtpreis inkl. Versand, MWST und Verzollung, Qualitätsscore und Preisalarmen.
         </p>
         <SearchBar large onSubmit={(q) => navigate('/suche', { q })} />
+        <div className="small muted" style={{ marginTop: 10 }}>
+          Nur für dich ausgewählt: Herren & Unisex · Oberteile {OWNER.sizes.top.join('/')} · Hosen W{OWNER.sizes.waist.join('/W')} bzw. {OWNER.sizes.bottom.filter((s) => /\d/.test(s)).join('/')} · Schuhe EU {OWNER.sizes.shoes.join('/')} · Stil-Mix aus Streetwear, Smart, Minimal & Workwear
+        </div>
         <div className="hero-stats">
           <span><b>{nNew.toLocaleString('de-CH')}</b> neue Produkte</span>
           <span><b>{nSecond.toLocaleString('de-CH')}</b> Secondhand & Vintage</span>

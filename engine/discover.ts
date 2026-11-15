@@ -8,6 +8,7 @@
 // Abgelehnte Marken werden gemerkt und erst nach 60 Tagen erneut versucht. Kein externer Dienst, nur die Shops selbst.
 import type { FxRates, Product, Shop, Style } from '../shared/types';
 import { landedCost } from '../shared/pricing';
+import { OWNER, ownerWants } from '../shared/owner';
 import { brandTier } from '../shared/classify';
 import { fold } from '../shared/text';
 import { fetchJson, fetchText } from './http';
@@ -117,6 +118,8 @@ async function probeBrand(brand: string, styles: Style[], via: string[], known: 
     const shop = buildShop(brand, domain, country, currency, styles, via, terms);
     const norm = raw.map((p) => normalizeProduct(p, shop)).filter((p): p is NonNullable<typeof p> => !!p);
     if (norm.length < 15 || norm.length / raw.length < 0.4) return { reason: `${domain}: zu wenig Kleidung (${norm.length}/${raw.length})` };
+    const mine = norm.filter(ownerWants).length;
+    if (mine < 10) return { reason: `${domain}: zu wenig Herrenmode in deinen Grössen (${mine})` };
     // Schutz vor Fake-Shops: Preise dürfen nicht viel tiefer sein als bei den Fachhändlern
     const tots = norm.map((p) => landedCost(p.p, shop as Shop, fx).total).sort((a, b) => a - b);
     const med = tots[Math.floor(tots.length / 2)];
@@ -165,7 +168,7 @@ export function buildShop(brand: string, domain: string, country: string, curren
  * (Hauptkatalog + Gesamtsortiment), nach Qualität und Anzahl sortiert.
  */
 export async function runDiscovery(o: {
-  products: Pick<Product, 'b' | 's' | 'q' | 'st' | 'seg' | 'tot'>[];
+  products: Pick<Product, 'b' | 's' | 'q' | 'st' | 'seg' | 'tot' | 'g'>[];
   shops: Shop[];
   fx: FxRates;
   probes: number;
@@ -184,7 +187,7 @@ export async function runDiscovery(o: {
   const agg = new Map<string, { brand: string; n: number; q: number; tots: number[]; via: Map<string, number>; styles: Map<Style, number> }>();
   for (const p of o.products) {
     const shop = shopById.get(p.s);
-    if (!shop?.multiBrand || p.seg !== 'new' || !p.b) continue;
+    if (!shop?.multiBrand || p.seg !== 'new' || !p.b || !OWNER.genders.includes(p.g)) continue;
     const k = slug(p.b);
     if (k.length < 2 || SKIP.has(p.b.toLowerCase()) || slug(shop.name) === k) continue;
     let a = agg.get(k);

@@ -239,6 +239,8 @@ export interface StyleProfile {
   priority: 'quality' | 'balanced' | 'price';
   /** Lieblingsshops ohne Feed (Zalando, Zara, H&M …) – erscheinen bei jeder Suche zuerst */
   extShops?: string[];
+  /** Version der übernommenen Besitzer-Einstellungen (shared/owner.ts) */
+  ownerV?: number;
 }
 
 export interface UserState {

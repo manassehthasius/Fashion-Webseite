@@ -10,6 +10,7 @@ import { landedCost } from '../shared/pricing';
 import { qualityScore } from '../shared/quality';
 import { fetchPages } from './sources/shopify';
 import { normalizeProduct, type NormProduct } from './normalize';
+import { ownerWants } from '../shared/owner';
 import { paths, readJson, writeJson, type EngineState } from './store';
 
 const DAY = 86400;
@@ -108,7 +109,7 @@ export async function runDeep(o: DeepOptions): Promise<{ index: DeepIndex; rows:
           const list: Product[] = [];
           for (const raw of res.products) {
             const n = normalizeProduct(raw, shop);
-            if (n) list.push(toDeepProduct(n, shop, o.fx, o.now));
+            if (n && ownerWants(n)) list.push(toDeepProduct(n, shop, o.fx, o.now));
           }
           fresh.set(shop.id, list);
           ss.deepAt = o.now;
@@ -138,7 +139,10 @@ export async function runDeep(o: DeepOptions): Promise<{ index: DeepIndex; rows:
   for (const [s, rows] of existing) {
     if (fresh.has(s)) continue;
     if (!shopById.has(s) && !o.keep.has(s)) continue;
-    for (const r of rows) add(s, r);
+    for (const r of rows) {
+      const sza = [...String(r[14] ?? '').split(','), ...String(r[15] ?? '').split(',')].filter(Boolean);
+      if (ownerWants({ g: r[10] as Product['g'], cat: r[9] as Product['cat'], sza, t: String(r[2]), kw: String(r[23] ?? '') })) add(s, r);
+    }
   }
 
   // In Kategorie-Gruppen schreiben
