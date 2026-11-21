@@ -1,0 +1,714 @@
+{
+  "generatedAt": "2026-11-21T18:37:16.114Z",
+  "durationS": 236,
+  "products": 64397,
+  "new": 59364,
+  "secondhand": 5033,
+  "shops": 226,
+  "failed": [
+    {
+      "id": "dailypaper",
+      "error": "Feed leer oder nicht erreichbar (2 Fehler)"
+    }
+  ],
+  "fx": {
+    "source": "shopify",
+    "date": "2026-11-21"
+  },
+  "catalogBytes": 26468771,
+  "historyBytes": 12302372,
+  "deep": 139301,
+  "deepBytes": 57566117,
+  "discovered": [
+    {
+      "id": "x-newbalance",
+      "name": "New Balance",
+      "at": "2026-11-13T18:27:59.158Z"
+    },
+    {
+      "id": "x-byparra",
+      "name": "By Parra",
+      "at": "2026-11-13T21:18:07.946Z"
+    },
+    {
+      "id": "x-rickowens",
+      "name": "Rick Owens",
+      "at": "2026-11-13T22:14:32.694Z"
+    },
+    {
+      "id": "x-karhu",
+      "name": "Karhu",
+      "at": "2026-11-13T22:14:34.314Z"
+    },
+    {
+      "id": "x-arteantwerp",
+      "name": "Arte Antwerp",
+      "at": "2026-11-13T23:13:47.063Z"
+    },
+    {
+      "id": "x-savekhaki",
+      "name": "Save Khaki",
+      "at": "2026-11-14T00:03:49.343Z"
+    },
+    {
+      "id": "x-lemaire",
+      "name": "Lemaire",
+      "at": "2026-11-14T00:59:02.954Z"
+    },
+    {
+      "id": "x-crocs",
+      "name": "Crocs",
+      "at": "2026-11-14T01:57:29.941Z"
+    },
+    {
+      "id": "x-anonymousism",
+      "name": "Anonymous Ism",
+      "at": "2026-11-14T02:43:40.406Z"
+    },
+    {
+      "id": "x-estudioniksen",
+      "name": "Estudio Niksen",
+      "at": "2026-11-14T02:43:41.704Z"
+    },
+    {
+      "id": "x-alexanderwang",
+      "name": "Alexander Wang",
+      "at": "2026-11-14T02:45:40.705Z"
+    },
+    {
+      "id": "x-gitmanvintage",
+      "name": "Gitman Vintage",
+      "at": "2026-11-14T03:43:26.606Z"
+    },
+    {
+      "id": "x-frankiesbikinis",
+      "name": "Frankies Bikinis",
+      "at": "2026-11-14T03:45:27.905Z"
+    },
+    {
+      "id": "x-americantrench",
+      "name": "American Trench",
+      "at": "2026-11-14T03:45:29.256Z"
+    },
+    {
+      "id": "x-studionicholson",
+      "name": "Studio Nicholson",
+      "at": "2026-11-14T04:46:43.594Z"
+    },
+    {
+      "id": "x-apc",
+      "name": "A.P.C.",
+      "at": "2026-11-14T04:47:04.570Z"
+    },
+    {
+      "id": "x-awakeny",
+      "name": "Awake NY",
+      "at": "2026-11-14T05:43:28.887Z"
+    },
+    {
+      "id": "x-roa",
+      "name": "ROA",
+      "at": "2026-11-14T05:44:17.840Z"
+    },
+    {
+      "id": "x-diemme",
+      "name": "Diemme",
+      "at": "2026-11-14T06:47:51.385Z"
+    },
+    {
+      "id": "x-wastedparis",
+      "name": "Wasted Paris",
+      "at": "2026-11-14T06:47:56.465Z"
+    },
+    {
+      "id": "x-agolde",
+      "name": "Agolde",
+      "at": "2026-11-14T07:55:46.191Z"
+    },
+    {
+      "id": "x-baserange",
+      "name": "Baserange",
+      "at": "2026-11-14T08:44:42.653Z"
+    },
+    {
+      "id": "x-justineclenquet",
+      "name": "Justine Clenquet",
+      "at": "2026-11-14T08:45:24.235Z"
+    },
+    {
+      "id": "x-gimaguas",
+      "name": "Gimaguas",
+      "at": "2026-11-14T09:40:08.853Z"
+    },
+    {
+      "id": "x-orlebarbrown",
+      "name": "Orlebar Brown",
+      "at": "2026-11-14T09:40:17.715Z"
+    },
+    {
+      "id": "x-grayers",
+      "name": "Grayers",
+      "at": "2026-11-14T09:40:40.672Z"
+    },
+    {
+      "id": "x-lfmarkey",
+      "name": "LF Markey",
+      "at": "2026-11-14T14:17:09.817Z"
+    },
+    {
+      "id": "x-palsportinggoods",
+      "name": "PAL Sporting Goods",
+      "at": "2026-11-14T14:17:23.274Z"
+    },
+    {
+      "id": "x-eliou",
+      "name": "Eliou",
+      "at": "2026-11-14T14:17:56.303Z"
+    },
+    {
+      "id": "x-storymfg",
+      "name": "STORY mfg.",
+      "at": "2026-11-14T15:11:09.773Z"
+    },
+    {
+      "id": "x-ayamuse",
+      "name": "Aya Muse",
+      "at": "2026-11-14T15:11:54.060Z"
+    },
+    {
+      "id": "x-adriancashmere",
+      "name": "Adrian Cashmere",
+      "at": "2026-11-14T15:11:59.624Z"
+    },
+    {
+      "id": "x-amiparis",
+      "name": "AMI Paris",
+      "at": "2026-11-14T16:10:29.654Z"
+    },
+    {
+      "id": "x-blacksuedestudio",
+      "name": "Black Suede Studio",
+      "at": "2026-11-14T16:10:31.935Z"
+    },
+    {
+      "id": "x-bather",
+      "name": "Bather",
+      "at": "2026-11-14T17:09:12.531Z"
+    },
+    {
+      "id": "x-topodesigns",
+      "name": "Topo Designs",
+      "at": "2026-11-14T18:05:20.065Z"
+    },
+    {
+      "id": "x-ebdenim",
+      "name": "EB Denim",
+      "at": "2026-11-14T18:49:21.182Z"
+    },
+    {
+      "id": "x-r13",
+      "name": "R13",
+      "at": "2026-11-14T19:42:54.053Z"
+    },
+    {
+      "id": "x-johnelliott",
+      "name": "John Elliott",
+      "at": "2026-11-14T19:42:55.437Z"
+    },
+    {
+      "id": "x-phingerin",
+      "name": "Phingerin",
+      "at": "2026-11-14T19:43:17.856Z"
+    },
+    {
+      "id": "x-sportyandrich",
+      "name": "Sporty & Rich",
+      "at": "2026-11-14T20:33:46.739Z"
+    },
+    {
+      "id": "x-parelstudios",
+      "name": "Parel Studios",
+      "at": "2026-11-14T20:33:48.532Z"
+    },
+    {
+      "id": "x-jasonmarkk",
+      "name": "Jason Markk",
+      "at": "2026-11-14T20:33:49.218Z"
+    },
+    {
+      "id": "x-bernerkuhl",
+      "name": "Berner Kuhl",
+      "at": "2026-11-14T21:13:06.822Z"
+    },
+    {
+      "id": "x-annilu",
+      "name": "Anni Lu",
+      "at": "2026-11-14T21:14:44.518Z"
+    },
+    {
+      "id": "x-poptradingcompany",
+      "name": "Pop Trading Company",
+      "at": "2026-11-14T22:06:21.262Z"
+    },
+    {
+      "id": "x-simuero",
+      "name": "Simuero",
+      "at": "2026-11-14T22:06:23.322Z"
+    },
+    {
+      "id": "x-oseree",
+      "name": "Oseree",
+      "at": "2026-11-14T22:06:25.160Z"
+    },
+    {
+      "id": "x-jogordon",
+      "name": "Jo Gordon",
+      "at": "2026-11-14T23:04:40.972Z"
+    },
+    {
+      "id": "x-market",
+      "name": "Market",
+      "at": "2026-11-14T23:05:15.791Z"
+    },
+    {
+      "id": "x-coperni",
+      "name": "Coperni",
+      "at": "2026-11-14T23:05:47.784Z"
+    },
+    {
+      "id": "x-uconacrobatics",
+      "name": "Ucon Acrobatics",
+      "at": "2026-11-15T00:03:01.469Z"
+    },
+    {
+      "id": "x-monitaly",
+      "name": "Monitaly",
+      "at": "2026-11-15T00:59:44.575Z"
+    },
+    {
+      "id": "x-socksss",
+      "name": "Socksss",
+      "at": "2026-11-15T00:59:47.343Z"
+    },
+    {
+      "id": "x-sansangear",
+      "name": "San San Gear",
+      "at": "2026-11-15T00:59:49.240Z"
+    },
+    {
+      "id": "x-032c",
+      "name": "032c",
+      "at": "2026-11-15T02:00:02.781Z"
+    },
+    {
+      "id": "x-museumofpeaceandquiet",
+      "name": "Museum of Peace & Quiet",
+      "at": "2026-11-15T02:00:03.620Z"
+    },
+    {
+      "id": "x-astaresort",
+      "name": "Asta Resort",
+      "at": "2026-11-15T02:00:17.597Z"
+    },
+    {
+      "id": "x-tropicofc",
+      "name": "Tropic of C",
+      "at": "2026-11-15T02:49:38.445Z"
+    },
+    {
+      "id": "x-blacktogrey",
+      "name": ".blacktogrey",
+      "at": "2026-11-15T04:49:45.872Z"
+    },
+    {
+      "id": "x-droledemonsieur",
+      "name": "Drole de Monsieur",
+      "at": "2026-11-15T04:50:11.011Z"
+    },
+    {
+      "id": "x-goodarthlywd",
+      "name": "Good Art Hlywd",
+      "at": "2026-11-15T06:52:35.015Z"
+    },
+    {
+      "id": "x-laboart",
+      "name": "Labo.Art",
+      "at": "2026-11-15T06:53:31.386Z"
+    },
+    {
+      "id": "x-spinellikilcollin",
+      "name": "Spinelli Kilcollin",
+      "at": "2026-11-15T08:00:28.456Z"
+    },
+    {
+      "id": "x-alexisbittar",
+      "name": "Alexis Bittar",
+      "at": "2026-11-15T08:48:43.844Z"
+    },
+    {
+      "id": "x-belleanna",
+      "name": "Belle Anna",
+      "at": "2026-11-15T11:33:36.556Z"
+    },
+    {
+      "id": "x-craiggreen",
+      "name": "Craig Green",
+      "at": "2026-11-15T12:02:59.214Z"
+    },
+    {
+      "id": "x-flatlisteyewear",
+      "name": "FLATLIST Eyewear",
+      "at": "2026-11-15T12:03:00.447Z"
+    },
+    {
+      "id": "x-tsptr",
+      "name": "Tsptr",
+      "at": "2026-11-15T12:13:18.239Z"
+    },
+    {
+      "id": "x-wythe",
+      "name": "Wythe",
+      "at": "2026-11-15T12:13:19.809Z"
+    },
+    {
+      "id": "x-beautiful",
+      "name": "b.Eautiful",
+      "at": "2026-11-15T12:22:43.783Z"
+    },
+    {
+      "id": "x-jlal",
+      "name": "J.L-A.L",
+      "at": "2026-11-15T13:29:46.636Z"
+    },
+    {
+      "id": "x-kestin",
+      "name": "Kestin",
+      "at": "2026-11-15T14:21:12.336Z"
+    },
+    {
+      "id": "x-labruket",
+      "name": "L:A Bruket",
+      "at": "2026-11-15T14:21:14.383Z"
+    },
+    {
+      "id": "x-sealson",
+      "name": "Sealson",
+      "at": "2026-11-15T15:13:38.628Z"
+    },
+    {
+      "id": "x-bleueburnham",
+      "name": "Bleue Burnham",
+      "at": "2026-11-15T16:12:05.295Z"
+    },
+    {
+      "id": "x-palmes",
+      "name": "Palmes",
+      "at": "2026-11-15T16:13:14.284Z"
+    },
+    {
+      "id": "x-twojeys",
+      "name": "Two Jeys",
+      "at": "2026-11-15T17:12:19.383Z"
+    },
+    {
+      "id": "x-therow",
+      "name": "The Row",
+      "at": "2026-11-15T18:05:03.753Z"
+    },
+    {
+      "id": "x-coutdelaliberte",
+      "name": "Coût De La Liberté",
+      "at": "2026-11-15T18:51:18.674Z"
+    },
+    {
+      "id": "x-georgecox",
+      "name": "George Cox",
+      "at": "2026-11-15T19:44:52.408Z"
+    },
+    {
+      "id": "x-reynspooner",
+      "name": "Reyn Spooner",
+      "at": "2026-11-15T19:44:57.542Z"
+    },
+    {
+      "id": "x-stanray",
+      "name": "Stan Ray",
+      "at": "2026-11-15T21:18:52.142Z"
+    },
+    {
+      "id": "x-oxfordpennant",
+      "name": "Oxford Pennant",
+      "at": "2026-11-15T22:07:53.600Z"
+    },
+    {
+      "id": "x-hankjobenhavn",
+      "name": "Han Kjobenhavn",
+      "at": "2026-11-15T22:08:03.168Z"
+    },
+    {
+      "id": "x-walesbonner",
+      "name": "Wales Bonner",
+      "at": "2026-11-16T00:13:46.236Z"
+    },
+    {
+      "id": "x-mfpen",
+      "name": "mfpen",
+      "at": "2026-11-16T00:13:52.917Z"
+    },
+    {
+      "id": "x-thamesmmxx",
+      "name": "Thames Mmxx.",
+      "at": "2026-11-16T01:57:32.015Z"
+    },
+    {
+      "id": "x-wilderbotanics",
+      "name": "Wilder Botanics",
+      "at": "2026-11-16T01:57:33.300Z"
+    },
+    {
+      "id": "x-acoldwall",
+      "name": "A-Cold-Wall*",
+      "at": "2026-11-16T01:57:45.548Z"
+    },
+    {
+      "id": "x-billykirk",
+      "name": "Billykirk",
+      "at": "2026-11-16T02:49:49.909Z"
+    },
+    {
+      "id": "x-porttanger",
+      "name": "Port Tanger",
+      "at": "2026-11-16T02:49:58.804Z"
+    },
+    {
+      "id": "x-noongoons",
+      "name": "Noon Goons",
+      "at": "2026-11-16T04:00:14.033Z"
+    },
+    {
+      "id": "x-polarskateco",
+      "name": "Polar Skate Co.",
+      "at": "2026-11-16T04:00:51.439Z"
+    },
+    {
+      "id": "x-palmofferonia",
+      "name": "Palm Of Feronia",
+      "at": "2026-11-16T04:01:34.940Z"
+    },
+    {
+      "id": "x-sophiehome",
+      "name": "Sophie Home",
+      "at": "2026-11-16T05:31:34.956Z"
+    },
+    {
+      "id": "x-banditsbandanas",
+      "name": "Bandits Bandanas",
+      "at": "2026-11-16T07:07:57.545Z"
+    },
+    {
+      "id": "x-sebago",
+      "name": "Sebago",
+      "at": "2026-11-16T10:04:21.079Z"
+    },
+    {
+      "id": "x-wildnutrition",
+      "name": "Wild Nutrition",
+      "at": "2026-11-16T10:05:06.461Z"
+    },
+    {
+      "id": "x-gunana",
+      "name": "Gun Ana",
+      "at": "2026-11-16T11:26:49.847Z"
+    },
+    {
+      "id": "x-extravitamins",
+      "name": "Extra Vitamins",
+      "at": "2026-11-16T11:27:04.799Z"
+    },
+    {
+      "id": "x-unna",
+      "name": "Unna",
+      "at": "2026-11-16T13:12:14.378Z"
+    },
+    {
+      "id": "x-solovair",
+      "name": "Solovair",
+      "at": "2026-11-16T13:12:16.093Z"
+    },
+    {
+      "id": "x-alexcrane",
+      "name": "Alex Crane",
+      "at": "2026-11-16T13:12:25.531Z"
+    },
+    {
+      "id": "x-maximumhenry",
+      "name": "Maximum Henry",
+      "at": "2026-11-16T16:01:52.048Z"
+    },
+    {
+      "id": "x-regalshoeandco",
+      "name": "Regal Shoe & Co.",
+      "at": "2026-11-16T16:01:53.754Z"
+    },
+    {
+      "id": "x-martineali",
+      "name": "Martine Ali",
+      "at": "2026-11-16T20:27:40.624Z"
+    },
+    {
+      "id": "x-blackstockandweber",
+      "name": "Blackstock & Weber",
+      "at": "2026-11-16T20:27:41.826Z"
+    },
+    {
+      "id": "x-justdon",
+      "name": "Just Don",
+      "at": "2026-11-16T20:27:42.814Z"
+    },
+    {
+      "id": "x-pfcandleco",
+      "name": "P.F. Candle Co.",
+      "at": "2026-11-16T22:19:42.872Z"
+    },
+    {
+      "id": "x-velvasheen",
+      "name": "Velva Sheen",
+      "at": "2026-11-16T22:19:44.942Z"
+    },
+    {
+      "id": "x-clae",
+      "name": "Clae",
+      "at": "2026-11-16T23:16:38.632Z"
+    },
+    {
+      "id": "x-dmystudios",
+      "name": "DMY Studios",
+      "at": "2026-11-17T00:12:42.550Z"
+    },
+    {
+      "id": "x-gottlobworld",
+      "name": "Gottlob World",
+      "at": "2026-11-17T00:14:05.953Z"
+    },
+    {
+      "id": "x-canadagoose",
+      "name": "Canada Goose",
+      "at": "2026-11-17T01:50:04.718Z"
+    },
+    {
+      "id": "x-futurevagabond",
+      "name": "Future Vagabond",
+      "at": "2026-11-17T01:50:13.353Z"
+    },
+    {
+      "id": "x-massimoalba",
+      "name": "Massimo Alba",
+      "at": "2026-11-17T02:49:34.598Z"
+    },
+    {
+      "id": "x-freeandeasy",
+      "name": "Free & Easy",
+      "at": "2026-11-17T05:55:48.953Z"
+    },
+    {
+      "id": "x-saxx",
+      "name": "Saxx",
+      "at": "2026-11-17T05:56:02.143Z"
+    },
+    {
+      "id": "x-jungmaven",
+      "name": "Jungmaven",
+      "at": "2026-11-17T05:56:03.502Z"
+    },
+    {
+      "id": "x-cdlp",
+      "name": "Cdlp",
+      "at": "2026-11-17T07:03:16.792Z"
+    },
+    {
+      "id": "x-paracia",
+      "name": "Paracia",
+      "at": "2026-11-17T08:25:11.417Z"
+    },
+    {
+      "id": "x-tabifootwear",
+      "name": "Tabi Footwear",
+      "at": "2026-11-17T08:25:13.761Z"
+    },
+    {
+      "id": "x-tarvasfootwear",
+      "name": "Tarvas Footwear",
+      "at": "2026-11-17T09:33:41.061Z"
+    },
+    {
+      "id": "x-helenarohner",
+      "name": "Helena Rohner",
+      "at": "2026-11-17T10:37:26.454Z"
+    },
+    {
+      "id": "x-18east",
+      "name": "18 East",
+      "at": "2026-11-17T10:37:31.695Z"
+    },
+    {
+      "id": "x-ewingathletics",
+      "name": "Ewing Athletics",
+      "at": "2026-11-17T10:37:33.784Z"
+    },
+    {
+      "id": "x-eppersonmountaineering",
+      "name": "Epperson Mountaineering",
+      "at": "2026-11-17T11:47:11.551Z"
+    },
+    {
+      "id": "x-youthsinbalaclava",
+      "name": "Youths In Balaclava",
+      "at": "2026-11-17T11:47:12.690Z"
+    },
+    {
+      "id": "x-isagrutman",
+      "name": "Isa Grutman",
+      "at": "2026-11-17T14:12:00.245Z"
+    },
+    {
+      "id": "x-kankan",
+      "name": "Kankan",
+      "at": "2026-11-17T14:12:10.429Z"
+    },
+    {
+      "id": "x-themercerbrand",
+      "name": "The Mercer Brand",
+      "at": "2026-11-17T15:24:17.502Z"
+    },
+    {
+      "id": "x-battenwear",
+      "name": "Battenwear",
+      "at": "2026-11-17T15:24:18.546Z"
+    },
+    {
+      "id": "x-articleno",
+      "name": "ARTICLE No",
+      "at": "2026-11-17T16:30:50.074Z"
+    },
+    {
+      "id": "x-benibeca",
+      "name": "Benibeca",
+      "at": "2026-11-17T17:34:16.355Z"
+    },
+    {
+      "id": "x-liberalyouthministry",
+      "name": "Liberal Youth Ministry",
+      "at": "2026-11-17T18:28:06.271Z"
+    },
+    {
+      "id": "x-nineinthemorning",
+      "name": "nineinthemorning",
+      "at": "2026-11-17T19:42:08.459Z"
+    },
+    {
+      "id": "x-shinola",
+      "name": "Shinola",
+      "at": "2026-11-18T16:32:29.401Z"
+    }
+  ]
+}
